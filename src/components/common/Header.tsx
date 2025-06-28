@@ -1,0 +1,90 @@
+// src/components/common/Header.tsx
+
+import { FC, useState } from "react";
+import logo from "@/assets/img/MC-logo.png";
+import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi";
+
+const Header: FC = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  return (
+    <div className="w-full flex justify-center pt-[30px] fixed top-0 left-0 z-[999] px-4 md:px-0 bg-transparent">
+      <header className="w-full max-w-[1200px] bg-[#BDC0C4] rounded-[47px] shadow-md flex items-center justify-between px-6 md:px-[60px] h-[70px]">
+        
+        {/* Logo */}
+        <div className="flex items-center h-full">
+          <img
+            src={logo}
+            alt="MC Dee Logo"
+            className="h-[60px] w-[60px] object-contain"
+          />
+        </div>
+
+        {/* Desktop Nav Links */}
+        <nav className="hidden md:flex gap-[30px] text-[#043873] font-medium">
+          <a href="#" className="hover:text-[#F76300] transition no-underline">Home</a>
+          <a href="#" className="hover:text-[#F76300] transition no-underline">Services</a>
+          <a href="#" className="hover:text-[#F76300] transition no-underline">About Us</a>
+          <a href="#" className="hover:text-[#F76300] transition no-underline">Contact Us</a>
+        </nav>
+
+        {/* Desktop Buttons */}
+        <div className="hidden md:flex gap-[12px] h-[40px]">
+          <a
+            href="#"
+            className="bg-[#F76300] text-[#043873] px-[20px] py-2 rounded-[10px] font-semibold text-sm transition hover:opacity-90 no-underline flex items-center justify-center"
+          >
+            Login
+          </a>
+          <a
+            href="#"
+            className="bg-[#3B82F6] text-white px-[20px] py-2 rounded-[10px] font-semibold text-sm transition hover:opacity-90 no-underline flex items-center justify-center"
+          >
+            Sign Up →
+          </a>
+        </div>
+
+        {/* Hamburger Icon (Mobile Only) */}
+        <div className="md:hidden flex items-center z-50">
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="focus:outline-none"
+          >
+            {menuOpen ? (
+              <HiOutlineX className="text-3xl text-[#043873]" />
+            ) : (
+              <HiOutlineMenuAlt3 className="text-3xl text-[#043873]" />
+            )}
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      {menuOpen && (
+        <div className="md:hidden absolute top-[80px] w-full bg-[#BDC0C4] rounded-b-[30px] shadow-lg py-6 px-8 flex flex-col gap-4 text-[#043873] font-medium transition-all duration-300">
+          <a href="#" className="hover:text-[#F76300] transition no-underline">Home</a>
+          <a href="#" className="hover:text-[#F76300] transition no-underline">Services</a>
+          <a href="#" className="hover:text-[#F76300] transition no-underline">About Us</a>
+          <a href="#" className="hover:text-[#F76300] transition no-underline">Contact Us</a>
+
+          <div className="flex flex-col gap-[10px] mt-4">
+            <a
+              href="#"
+              className="bg-[#F76300] text-[#043873] px-[20px] py-2 rounded-[10px] font-semibold text-sm no-underline text-center"
+            >
+              Login
+            </a>
+            <a
+              href="#"
+              className="bg-[#3B82F6] text-white px-[20px] py-2 rounded-[10px] font-semibold text-sm no-underline text-center"
+            >
+              Sign Up →
+            </a>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Header;
