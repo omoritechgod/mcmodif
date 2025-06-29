@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, MapPin, Clock, Star, Filter, Search, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, Star, Filter, Search, ShoppingCart, UtensilsCrossed, Coffee, IceCream, Pizza } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const FoodDelivery: React.FC = () => {
@@ -9,11 +9,11 @@ const FoodDelivery: React.FC = () => {
   const [cartItems, setCartItems] = useState(0);
 
   const categories = [
-    { id: 'all', name: 'All', icon: '🍽️' },
-    { id: 'fast-food', name: 'Fast Food', icon: '🍔' },
-    { id: 'local', name: 'Local Dishes', icon: '🍲' },
-    { id: 'drinks', name: 'Drinks', icon: '🥤' },
-    { id: 'desserts', name: 'Desserts', icon: '🍰' },
+    { id: 'all', name: 'All', icon: <UtensilsCrossed size={16} /> },
+    { id: 'fast-food', name: 'Fast Food', icon: <Pizza size={16} /> },
+    { id: 'local', name: 'Local Dishes', icon: <Coffee size={16} /> },
+    { id: 'drinks', name: 'Drinks', icon: <Coffee size={16} /> },
+    { id: 'desserts', name: 'Desserts', icon: <IceCream size={16} /> },
   ];
 
   const restaurants = [
@@ -160,7 +160,7 @@ const FoodDelivery: React.FC = () => {
                     : 'bg-white text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                <span>{category.icon}</span>
+                {category.icon}
                 <span className="font-medium">{category.name}</span>
               </button>
             ))}
@@ -223,7 +223,9 @@ const FoodDelivery: React.FC = () => {
         {/* Empty State */}
         {restaurants.length === 0 && (
           <div className="text-center py-12">
-            <div className="text-6xl mb-4">🍽️</div>
+            <div className="text-6xl mb-4">
+              <UtensilsCrossed className="mx-auto text-gray-400" size={64} />
+            </div>
             <h3 className="text-xl font-bold text-gray-900 mb-2">No restaurants found</h3>
             <p className="text-gray-600">Try adjusting your search or category filter</p>
           </div>

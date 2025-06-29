@@ -149,10 +149,16 @@ const ServicesSection: React.FC = () => {
               Join thousands of satisfied users and verified vendors on Nigeria's most trusted marketplace platform.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
+              <button 
+                onClick={() => navigate('/signup')}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl transition-colors"
+              >
                 Sign Up as Customer
               </button>
-              <button className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold px-8 py-3 rounded-xl transition-colors">
+              <button 
+                onClick={() => navigate('/signup')}
+                className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold px-8 py-3 rounded-xl transition-colors"
+              >
                 Join as Vendor
               </button>
             </div>

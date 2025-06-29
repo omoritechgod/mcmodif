@@ -130,7 +130,10 @@ const SignupForm: React.FC<SignupFormProps> = ({ userType }) => {
       {userType === 'vendor' && (
         <>
           <div className="border-t border-gray-200 pt-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Business Information</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <Building size={20} />
+              Business Information
+            </h3>
             
             <div className="space-y-4">
               <div>

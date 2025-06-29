@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, User, Building } from 'lucide-react';
+import { ArrowLeft, User, Building, Shield, CheckCircle, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import SignupForm from '../components/auth/SignupForm';
 
@@ -90,7 +90,9 @@ const Signup: React.FC = () => {
             {activeTab === 'vendor' && (
               <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
                 <div className="flex items-start gap-3">
-                  <div className="text-amber-600 mt-1">⚠️</div>
+                  <div className="text-amber-600 mt-1">
+                    <Shield size={20} />
+                  </div>
                   <div>
                     <h4 className="font-semibold text-amber-800 mb-1">Vendor Account Verification</h4>
                     <p className="text-amber-700 text-sm leading-relaxed">
@@ -112,17 +114,23 @@ const Signup: React.FC = () => {
             <h3 className="font-semibold text-gray-900 mb-2">Why Choose McDee?</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
               <div>
-                <div className="text-2xl mb-2">🔒</div>
+                <div className="text-2xl mb-2">
+                  <Shield className="mx-auto text-blue-600" size={32} />
+                </div>
                 <div className="font-medium">Secure Escrow</div>
                 <div>Protected transactions</div>
               </div>
               <div>
-                <div className="text-2xl mb-2">✅</div>
+                <div className="text-2xl mb-2">
+                  <CheckCircle className="mx-auto text-green-600" size={32} />
+                </div>
                 <div className="font-medium">Verified Vendors</div>
                 <div>Trusted service providers</div>
               </div>
               <div>
-                <div className="text-2xl mb-2">📱</div>
+                <div className="text-2xl mb-2">
+                  <Star className="mx-auto text-yellow-600" size={32} />
+                </div>
                 <div className="font-medium">Easy to Use</div>
                 <div>Simple and intuitive</div>
               </div>

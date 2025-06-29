@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, MapPin, Wrench, Star, Phone, MessageCircle, Clock, DollarSign } from 'lucide-react';
+import { ArrowLeft, MapPin, Wrench, Star, Phone, MessageCircle, Clock, DollarSign, Car, Zap, Droplets, Disc, Snowflake, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const AutoMaintenance: React.FC = () => {
@@ -9,12 +9,12 @@ const AutoMaintenance: React.FC = () => {
   const [showMechanics, setShowMechanics] = useState(false);
 
   const serviceTypes = [
-    { id: 'engine', name: 'Engine Repair', icon: '🔧', price: '₦15,000 - ₦50,000' },
-    { id: 'brake', name: 'Brake Service', icon: '🛑', price: '₦8,000 - ₦25,000' },
-    { id: 'oil', name: 'Oil Change', icon: '🛢️', price: '₦5,000 - ₦12,000' },
-    { id: 'tire', name: 'Tire Service', icon: '🛞', price: '₦3,000 - ₦15,000' },
-    { id: 'electrical', name: 'Electrical', icon: '⚡', price: '₦10,000 - ₦30,000' },
-    { id: 'ac', name: 'AC Repair', icon: '❄️', price: '₦12,000 - ₦35,000' },
+    { id: 'engine', name: 'Engine Repair', icon: <Settings size={24} />, price: '₦15,000 - ₦50,000' },
+    { id: 'brake', name: 'Brake Service', icon: <Disc size={24} />, price: '₦8,000 - ₦25,000' },
+    { id: 'oil', name: 'Oil Change', icon: <Droplets size={24} />, price: '₦5,000 - ₦12,000' },
+    { id: 'tire', name: 'Tire Service', icon: <Car size={24} />, price: '₦3,000 - ₦15,000' },
+    { id: 'electrical', name: 'Electrical', icon: <Zap size={24} />, price: '₦10,000 - ₦30,000' },
+    { id: 'ac', name: 'AC Repair', icon: <Snowflake size={24} />, price: '₦12,000 - ₦35,000' },
   ];
 
   const nearbyMechanics = [
@@ -119,7 +119,7 @@ const AutoMaintenance: React.FC = () => {
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                     >
-                      <div className="text-2xl mb-2">{service.icon}</div>
+                      <div className="text-blue-600 mb-2">{service.icon}</div>
                       <div className="font-semibold text-gray-900 mb-1">{service.name}</div>
                       <div className="text-sm text-gray-600">{service.price}</div>
                     </button>
@@ -260,17 +260,23 @@ const AutoMaintenance: React.FC = () => {
               <h3 className="text-xl font-bold mb-4">How Auto Maintenance Works</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="text-center">
-                  <div className="text-3xl mb-2">1️⃣</div>
+                  <div className="text-3xl mb-2">
+                    <MessageCircle className="mx-auto" size={32} />
+                  </div>
                   <div className="font-semibold mb-1">Contact Mechanic</div>
                   <div className="text-sm opacity-90">Choose and contact your preferred mechanic</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl mb-2">2️⃣</div>
+                  <div className="text-3xl mb-2">
+                    <DollarSign className="mx-auto" size={32} />
+                  </div>
                   <div className="font-semibold mb-1">Get Quote</div>
                   <div className="text-sm opacity-90">Receive detailed quote and timeline</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl mb-2">3️⃣</div>
+                  <div className="text-3xl mb-2">
+                    <Wrench className="mx-auto" size={32} />
+                  </div>
                   <div className="font-semibold mb-1">Service & Pay</div>
                   <div className="text-sm opacity-90">Get your car fixed and pay securely</div>
                 </div>

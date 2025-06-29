@@ -1,102 +1,90 @@
 import React, { useState } from 'react';
-import { Menu, X, User, Bell } from 'lucide-react';
+import { HiOutlineMenuAlt3, HiOutlineX } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
+import logo from '../assets/img/MC-logo.png';
 
 const Header: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   return (
-    <header className="bg-white shadow-lg sticky top-0 z-50 backdrop-blur-sm bg-white/95">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="text-2xl font-bold text-blue-600">McDee</div>
-            </div>
-          </div>
+    <div className="w-full flex justify-center pt-[30px] fixed top-0 left-0 z-[999] px-4 md:px-0 bg-transparent">
+      <header className="w-full max-w-[1200px] bg-[#BDC0C4] rounded-[47px] shadow-md flex items-center justify-between px-6 md:px-[60px] h-[70px]">
+        
+        {/* Logo */}
+        <div className="flex items-center h-full">
+          <img
+            src={logo}
+            alt="MC Dee Logo"
+            className="h-[60px] w-[60px] object-contain cursor-pointer"
+            onClick={() => navigate('/')}
+          />
+        </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
-              <a href="#services" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">
-                Services
-              </a>
-              <a href="#about" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">
-                About
-              </a>
-              <a href="#trust" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">
-                Trust & Safety
-              </a>
-              <a href="#faq" className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">
-                FAQ
-              </a>
-            </div>
-          </div>
+        {/* Desktop Nav Links */}
+        <nav className="hidden md:flex gap-[30px] text-[#043873] font-medium">
+          <a href="#" className="hover:text-[#F76300] transition no-underline">Home</a>
+          <a href="#services" className="hover:text-[#F76300] transition no-underline">Services</a>
+          <a href="#about" className="hover:text-[#F76300] transition no-underline">About Us</a>
+          <a href="#faq" className="hover:text-[#F76300] transition no-underline">Contact Us</a>
+        </nav>
 
-          {/* CTA Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
-            <button 
-              onClick={() => navigate('/login')}
-              className="text-gray-700 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors"
-            >
-              Sign In
-            </button>
-            <button 
-              onClick={() => navigate('/signup')}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors"
-            >
-              Get Started
-            </button>
-          </div>
+        {/* Desktop Buttons */}
+        <div className="hidden md:flex gap-[12px] h-[40px]">
+          <button
+            onClick={() => navigate('/login')}
+            className="bg-[#F76300] text-[#043873] px-[20px] py-2 rounded-[10px] font-semibold text-sm transition hover:opacity-90 no-underline flex items-center justify-center"
+          >
+            Login
+          </button>
+          <button
+            onClick={() => navigate('/signup')}
+            className="bg-[#3B82F6] text-white px-[20px] py-2 rounded-[10px] font-semibold text-sm transition hover:opacity-90 no-underline flex items-center justify-center"
+          >
+            Sign Up →
+          </button>
+        </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
+        {/* Hamburger Icon (Mobile Only) */}
+        <div className="md:hidden flex items-center z-50">
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="focus:outline-none"
+          >
+            {menuOpen ? (
+              <HiOutlineX className="text-3xl text-[#043873]" />
+            ) : (
+              <HiOutlineMenuAlt3 className="text-3xl text-[#043873]" />
+            )}
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      {menuOpen && (
+        <div className="md:hidden absolute top-[80px] w-full bg-[#BDC0C4] rounded-b-[30px] shadow-lg py-6 px-8 flex flex-col gap-4 text-[#043873] font-medium transition-all duration-300">
+          <a href="#" className="hover:text-[#F76300] transition no-underline">Home</a>
+          <a href="#services" className="hover:text-[#F76300] transition no-underline">Services</a>
+          <a href="#about" className="hover:text-[#F76300] transition no-underline">About Us</a>
+          <a href="#faq" className="hover:text-[#F76300] transition no-underline">Contact Us</a>
+
+          <div className="flex flex-col gap-[10px] mt-4">
             <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 hover:text-blue-600 p-2"
+              onClick={() => navigate('/login')}
+              className="bg-[#F76300] text-[#043873] px-[20px] py-2 rounded-[10px] font-semibold text-sm no-underline text-center"
             >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              Login
+            </button>
+            <button
+              onClick={() => navigate('/signup')}
+              className="bg-[#3B82F6] text-white px-[20px] py-2 rounded-[10px] font-semibold text-sm no-underline text-center"
+            >
+              Sign Up →
             </button>
           </div>
         </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
-              <a href="#services" className="block text-gray-700 hover:text-blue-600 px-3 py-2 text-base font-medium">
-                Services
-              </a>
-              <a href="#about" className="block text-gray-700 hover:text-blue-600 px-3 py-2 text-base font-medium">
-                About
-              </a>
-              <a href="#trust" className="block text-gray-700 hover:text-blue-600 px-3 py-2 text-base font-medium">
-                Trust & Safety
-              </a>
-              <a href="#faq" className="block text-gray-700 hover:text-blue-600 px-3 py-2 text-base font-medium">
-                FAQ
-              </a>
-              <div className="pt-4 space-y-2">
-                <button 
-                  onClick={() => navigate('/login')}
-                  className="block w-full text-left text-gray-700 hover:text-blue-600 px-3 py-2 text-base font-medium"
-                >
-                  Sign In
-                </button>
-                <button 
-                  onClick={() => navigate('/signup')}
-                  className="block w-full bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-base font-medium text-center"
-                >
-                  Get Started
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </header>
+      )}
+    </div>
   );
 };
 
