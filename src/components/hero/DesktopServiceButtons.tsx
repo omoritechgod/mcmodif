@@ -47,7 +47,7 @@ const DesktopServiceButtons: React.FC<DesktopServiceButtonsProps> = ({ heroIcons
   const animatedService = heroIcons[animTarget]?.label;
 
   return (
-    <div className="absolute right-[8%] top-[30%] z-20 transform -translate-y-1/2">
+    <div className="absolute right-[6%] bottom-[20%] z-20">
       <div className="grid grid-cols-3 gap-y-4 gap-x-6">
         {buttonLayout.map((serviceName, idx) => {
           if (serviceName === "") {
