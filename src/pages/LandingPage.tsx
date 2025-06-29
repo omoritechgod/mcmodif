@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '../components/Header';
-import HeroSection from '../components/HeroSection';
+import HeroSection from '../components/hero/HeroSection';
 import ServicesSection from '../components/ServicesSection';
 import AboutSection from '../components/AboutSection';
 import TrustSection from '../components/TrustSection';
