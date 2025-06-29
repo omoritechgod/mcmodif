@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HiOutlineMenuAlt3, HiOutlineX } from 'react-icons/hi';
+import { Menu, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/img/MC-logo.png';
 
@@ -52,9 +52,9 @@ const Header: React.FC = () => {
             className="focus:outline-none"
           >
             {menuOpen ? (
-              <HiOutlineX className="text-3xl text-[#043873]" />
+              <X className="w-8 h-8 text-[#043873]" />
             ) : (
-              <HiOutlineMenuAlt3 className="text-3xl text-[#043873]" />
+              <Menu className="w-8 h-8 text-[#043873]" />
             )}
           </button>
         </div>
