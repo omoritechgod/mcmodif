@@ -61,9 +61,11 @@ const MobileOrbit: React.FC<MobileOrbitProps> = ({ icons, activeIndex }) => {
             <div className={`w-full h-full rounded-full bg-white p-2 shadow-lg ${
               isActive ? 'ring-2 ring-orange-500' : ''
             }`}>
-              <div className="w-full h-full bg-blue-100 rounded-full flex items-center justify-center text-2xl">
-                {getServiceEmoji(icon.label)}
-              </div>
+              <img 
+                src={icon.img} 
+                alt={icon.label}
+                className="w-full h-full object-contain"
+              />
             </div>
           </div>
         );
@@ -71,27 +73,16 @@ const MobileOrbit: React.FC<MobileOrbitProps> = ({ icons, activeIndex }) => {
 
       {/* Center Active Icon */}
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <div className="w-20 h-20 bg-white rounded-full p-3 shadow-xl ring-4 ring-orange-500 flex items-center justify-center">
-          <div className="text-3xl">
-            {getServiceEmoji(icons[activeIndex].label)}
-          </div>
+        <div className="w-20 h-20 bg-white rounded-full p-3 shadow-xl ring-4 ring-orange-500">
+          <img 
+            src={icons[activeIndex].img} 
+            alt={icons[activeIndex].label}
+            className="w-full h-full object-contain"
+          />
         </div>
       </div>
     </div>
   );
-};
-
-// Helper function to get emoji for each service
-const getServiceEmoji = (label: string): string => {
-  const emojiMap: Record<string, string> = {
-    "Ride Hailing": "🏍️",
-    "Food Delivery": "🍽️",
-    "E-commerce": "🛍️",
-    "Auto Maintenance": "🔧",
-    "Service Apartments": "🏠",
-    "General Services": "⚙️",
-  };
-  return emojiMap[label] || "🔧";
 };
 
 export default MobileOrbit;

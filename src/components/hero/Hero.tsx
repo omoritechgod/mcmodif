@@ -5,46 +5,56 @@ import ServiceButtonsGrid from "./ServiceButtonsGrid";
 import DesktopCarousel from "./DesktopCarousel";
 import DesktopServiceButtons from "./DesktopServiceButtons";
 
+// Import service icons
+import foodImg from "../../assets/img/food-1.png";
+import shopImg from "../../assets/img/cart_shop.png";
+import deliveryImg from "../../assets/img/delivery.png";
+import rideImg from "../../assets/img/okada-ride.png";
+import oilGasImg from "../../assets/img/oil_gas.png";
+import mechImg from "../../assets/img/mech_2.png";
+import bgGif from "../../assets/img/modif-gif.gif";
+import mobileBg from "../../assets/img/Mobile-bg.jpg";
+
 const carouselItems = [
   {
-    sub: "Experience seamless peer-to-peer transactions across all essential lifestyle services with secure escrow protection.",
+    sub: "Online Shopping has never been more Interesting than it is with Us",
     btn1: "Learn More",
     btn2: "Get Started",
   },
   {
-    sub: "Get picked up faster with verified local riders near you. Safe, reliable, and affordable transportation.",
+    sub: "Get picked up faster with verified local riders near you",
     btn1: "How It Works",
     btn2: "Book Now",
   },
   {
-    sub: "Discover comfortable service apartments, hotels, and hostels with verified listings and secure bookings.",
+    sub: "Discover affordable service apartments near you",
     btn1: "Explore Rooms",
     btn2: "Book Now",
   },
   {
-    sub: "Shop from verified vendors with secure transactions and reliable delivery across Nigeria.",
-    btn1: "Start Shopping",
-    btn2: "Join Now",
-  },
-  {
-    sub: "Connect with skilled mechanics for reliable car repairs and maintenance services near you.",
+    sub: "Connect with skilled mechanics for reliable car repairs and maintenance",
     btn1: "Find Mechanics",
     btn2: "Get Quote",
   },
   {
-    sub: "Find trusted professionals for home services, repairs, and specialized tasks with quality assurance.",
+    sub: "Find trusted professionals for home services and specialized tasks",
     btn1: "Browse Services",
     btn2: "Get Help",
+  },
+  {
+    sub: "Fresh meals delivered fast from your favorite local restaurants",
+    btn1: "Order Now",
+    btn2: "View Menu",
   },
 ];
 
 const heroIcons = [
-  { img: "", label: "Ride Hailing", route: "/ride-hailing" },
-  { img: "", label: "Food Delivery", route: "/food-delivery" },
-  { img: "", label: "E-commerce", route: "/ecommerce" },
-  { img: "", label: "Auto Maintenance", route: "/auto-maintenance" },
-  { img: "", label: "Service Apartments", route: "/service-apartments" },
-  { img: "", label: "General Services", route: "/general-services" },
+  { img: rideImg, label: "Ride Hailing", route: "/ride-hailing" },
+  { img: foodImg, label: "Food Delivery", route: "/food-delivery" },
+  { img: shopImg, label: "E-commerce", route: "/ecommerce" },
+  { img: mechImg, label: "Auto Maintenance", route: "/auto-maintenance" },
+  { img: deliveryImg, label: "Service Apartments", route: "/service-apartments" },
+  { img: oilGasImg, label: "General Services", route: "/general-services" },
 ];
 
 const Hero: React.FC = () => {
@@ -55,12 +65,12 @@ const Hero: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % carouselItems.length);
-    }, 4000);
+    }, 3000);
 
     // Synchronize the orbit animation with carousel timing
     const animInterval = setInterval(() => {
       setAnimTarget((prev) => (prev + 1) % heroIcons.length);
-    }, 4000);
+    }, 3000);
 
     return () => {
       clearInterval(interval);
@@ -70,14 +80,14 @@ const Hero: React.FC = () => {
 
   if (isMobile) {
     return (
-      <section className="relative min-h-screen w-full text-white overflow-hidden">
-        {/* Mobile Background with Gradient */}
-        <div className="absolute inset-0 z-0 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-800">
-          <div className="absolute inset-0 bg-black/20"></div>
-          {/* Animated background elements */}
-          <div className="absolute top-20 left-10 w-32 h-32 bg-blue-400/10 rounded-full blur-xl animate-pulse"></div>
-          <div className="absolute bottom-32 right-8 w-24 h-24 bg-purple-400/10 rounded-full blur-xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-          <div className="absolute top-1/2 left-4 w-16 h-16 bg-orange-400/10 rounded-full blur-xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+      <section className="relative min-h-screen w-full text-white overflow-hidden bg-gradient-to-br from-blue-900 via-purple-900 to-blue-800">
+        {/* Mobile Background */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src={mobileBg}
+            alt="Mobile background"
+            className="w-full h-full object-cover opacity-30"
+          />
         </div>
 
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 py-8">
@@ -92,7 +102,7 @@ const Hero: React.FC = () => {
                 & Services Platform
               </span>
             </h1>
-            <p className="text-lg text-white/80 max-w-sm mx-auto leading-relaxed">
+            <p className="text-lg text-white/80 max-w-sm mx-auto">
               {carouselItems[current].sub}
             </p>
           </div>
@@ -117,39 +127,16 @@ const Hero: React.FC = () => {
   }
 
   return (
-    <section className="relative min-h-screen w-full text-white overflow-hidden">
-      {/* Desktop Background with Enhanced Gradient */}
-      <div className="absolute inset-0 z-0">
-        <div className="w-full h-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-800">
-          {/* Animated background elements */}
-          <div className="absolute top-20 left-20 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-32 right-32 w-48 h-48 bg-purple-400/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-          <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-orange-400/10 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute bottom-1/4 left-1/2 w-40 h-40 bg-pink-400/10 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '3s' }}></div>
-        </div>
-        <div className="absolute inset-0 bg-black/30"></div>
-      </div>
-
-      {/* Main Content */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen">
-        {/* Center Title */}
-        <div className="text-center">
-          <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
-            Your Trusted
-            <span className="block bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent">
-              Marketplace
-            </span>
-            <span className="block text-4xl md:text-5xl lg:text-6xl mt-4">
-              & Services Platform
-            </span>
-          </h1>
-        </div>
-      </div>
-
+    <section
+      className="relative min-h-screen w-full text-white overflow-hidden bg-cover bg-no-repeat bg-center"
+      style={{
+        backgroundImage: `url(${bgGif})`,
+      }}
+    >
       {/* Desktop Carousel Text */}
       <DesktopCarousel currentItem={carouselItems[current]} />
 
-      {/* Desktop Service Buttons */}
+      {/* Desktop Service Buttons - Scaled down and repositioned */}
       <DesktopServiceButtons heroIcons={heroIcons} animTarget={animTarget} />
     </section>
   );

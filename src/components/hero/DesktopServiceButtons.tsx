@@ -19,7 +19,7 @@ const DesktopServiceButtons: React.FC<DesktopServiceButtonsProps> = ({ heroIcons
     navigate(route);
   };
 
-  // Define the scattered layout pattern
+  // Define the scattered layout pattern - updated to match your services
   const buttonLayout = [
     "Ride Hailing", "", "E-commerce",
     "", "Food Delivery", "",
@@ -47,11 +47,11 @@ const DesktopServiceButtons: React.FC<DesktopServiceButtonsProps> = ({ heroIcons
   const animatedService = heroIcons[animTarget]?.label;
 
   return (
-    <div className="absolute right-[8%] bottom-[150px] z-20">
-      <div className="grid grid-cols-3 gap-y-4 gap-x-6">
+    <div className="absolute right-[6%] top-[35%] z-20 transform -translate-y-1/2">
+      <div className="grid grid-cols-3 gap-y-3 gap-x-4">
         {buttonLayout.map((serviceName, idx) => {
           if (serviceName === "") {
-            return <div key={idx} className="w-[180px] h-[45px]"></div>;
+            return <div key={idx} className="w-[140px] h-[35px]"></div>;
           }
 
           const service = iconMap[serviceName];
@@ -60,16 +60,16 @@ const DesktopServiceButtons: React.FC<DesktopServiceButtonsProps> = ({ heroIcons
           const isAnimated = animatedService === serviceName;
 
           return (
-            <div className="relative w-[180px] h-[45px]" key={idx}>
+            <div className="relative w-[140px] h-[35px]" key={idx}>
               {isAnimated && (
                 <>
-                  <div className="absolute top-[-10px] left-[-15px] w-[200px] h-[50px] z-0 animate-pulse bg-gradient-to-r from-blue-400/30 to-purple-400/30 rounded-xl blur-sm" />
-                  <div className="absolute bottom-[-10px] right-[-15px] w-[200px] h-[50px] z-0 animate-pulse bg-gradient-to-l from-orange-400/30 to-pink-400/30 rounded-xl blur-sm" />
+                  <div className="absolute top-[-8px] left-[-12px] w-[160px] h-[40px] z-0 animate-pulse bg-gradient-to-r from-blue-400/30 to-purple-400/30 rounded-xl blur-sm" />
+                  <div className="absolute bottom-[-8px] right-[-12px] w-[160px] h-[40px] z-0 animate-pulse bg-gradient-to-l from-orange-400/30 to-pink-400/30 rounded-xl blur-sm" />
                 </>
               )}
               <button
                 onClick={() => handleButtonClick(service.route)}
-                className={`relative z-10 ${colors[service.label]} font-semibold px-6 py-3 rounded-[20px] w-full h-full flex items-center justify-center hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl`}
+                className={`relative z-10 ${colors[service.label]} font-semibold px-4 py-2 rounded-[20px] w-full h-full flex items-center justify-center hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl text-sm`}
               >
                 {service.label}
               </button>
