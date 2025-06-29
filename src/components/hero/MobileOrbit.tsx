@@ -59,7 +59,7 @@ const MobileOrbit: React.FC<MobileOrbitProps> = ({ icons, activeIndex }) => {
             }}
           >
             <div className={`w-full h-full rounded-full bg-white p-2 shadow-lg ${
-              isActive ? 'ring-2 ring-orange-500' : ''
+              isActive ? 'ring-2 ring-[#F76300]' : ''
             }`}>
               <img 
                 src={icon.img} 
@@ -73,7 +73,7 @@ const MobileOrbit: React.FC<MobileOrbitProps> = ({ icons, activeIndex }) => {
 
       {/* Center Active Icon */}
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <div className="w-20 h-20 bg-white rounded-full p-3 shadow-xl ring-4 ring-orange-500">
+        <div className="w-20 h-20 bg-white rounded-full p-3 shadow-xl ring-4 ring-[#F76300]">
           <img 
             src={icons[activeIndex].img} 
             alt={icons[activeIndex].label}

@@ -1,5 +1,5 @@
 .hero-animation {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #043873 0%, #3B82F6 50%, #043873 100%);
   background-size: 400% 400%;
   animation: gradientShift 8s ease infinite;
 }
@@ -39,7 +39,7 @@
 /* Hero Section Specific Styles */
 .hero-section {
   position: relative;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #043873 0%, #3B82F6 100%);
 }
 
 .hero-bg {
@@ -89,4 +89,46 @@
   border-radius: 50%;
   transform: translate(-50%, -50%);
   animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+/* Brand Color Variables */
+:root {
+  --primary-blue: #043873;
+  --secondary-blue: #3B82F6;
+  --accent-orange: #F76300;
+  --light-blue: #4F9CF9;
+  --cyan: #36C6FF;
+  --yellow: #FFE492;
+  --gray: #BDC0C4;
+}
+
+/* Update button styles to use brand colors */
+.btn-primary {
+  background-color: var(--accent-orange);
+  color: white;
+}
+
+.btn-secondary {
+  background-color: var(--secondary-blue);
+  color: white;
+}
+
+.text-brand-primary {
+  color: var(--primary-blue);
+}
+
+.text-brand-orange {
+  color: var(--accent-orange);
+}
+
+.bg-brand-primary {
+  background-color: var(--primary-blue);
+}
+
+.bg-brand-orange {
+  background-color: var(--accent-orange);
+}
+
+.bg-brand-secondary {
+  background-color: var(--secondary-blue);
 }

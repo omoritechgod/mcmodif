@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
-import { Bike, UtensilsCrossed, ShoppingBag, Wrench, Home, Users } from 'lucide-react';
 
 interface ServiceIcon {
   img: string;
@@ -38,16 +37,6 @@ const DesktopServiceButtons: React.FC<DesktopServiceButtonsProps> = ({ heroIcons
     "General Services": "bg-[#FFE492]/60 text-[#043873]",
   };
 
-  // Icon mapping for services
-  const serviceIcons: Record<string, React.ReactNode> = {
-    "Ride Hailing": <Bike size={16} className="mr-2" />,
-    "Food Delivery": <UtensilsCrossed size={16} className="mr-2" />,
-    "E-commerce": <ShoppingBag size={16} className="mr-2" />,
-    "Auto Maintenance": <Wrench size={16} className="mr-2" />,
-    "Service Apartments": <Home size={16} className="mr-2" />,
-    "General Services": <Users size={16} className="mr-2" />,
-  };
-
   // Create a mapping of service names to icons
   const iconMap = heroIcons.reduce((acc, icon) => {
     acc[icon.label] = icon;
@@ -58,11 +47,11 @@ const DesktopServiceButtons: React.FC<DesktopServiceButtonsProps> = ({ heroIcons
   const animatedService = heroIcons[animTarget]?.label;
 
   return (
-    <div className="absolute right-[6%] top-[35%] z-20 transform -translate-y-1/2">
-      <div className="grid grid-cols-3 gap-y-3 gap-x-4">
+    <div className="absolute right-[8%] top-[30%] z-20 transform -translate-y-1/2">
+      <div className="grid grid-cols-3 gap-y-4 gap-x-6">
         {buttonLayout.map((serviceName, idx) => {
           if (serviceName === "") {
-            return <div key={idx} className="w-[140px] h-[35px]"></div>;
+            return <div key={idx} className="w-[160px] h-[40px]"></div>;
           }
 
           const service = iconMap[serviceName];
@@ -71,18 +60,17 @@ const DesktopServiceButtons: React.FC<DesktopServiceButtonsProps> = ({ heroIcons
           const isAnimated = animatedService === serviceName;
 
           return (
-            <div className="relative w-[140px] h-[35px]" key={idx}>
+            <div className="relative w-[160px] h-[40px]" key={idx}>
               {isAnimated && (
                 <>
-                  <div className="absolute top-[-8px] left-[-12px] w-[160px] h-[40px] z-0 animate-pulse bg-gradient-to-r from-blue-400/30 to-purple-400/30 rounded-xl blur-sm" />
-                  <div className="absolute bottom-[-8px] right-[-12px] w-[160px] h-[40px] z-0 animate-pulse bg-gradient-to-l from-orange-400/30 to-pink-400/30 rounded-xl blur-sm" />
+                  <div className="absolute top-[-10px] left-[-15px] w-[180px] h-[50px] z-0 animate-pulse bg-gradient-to-r from-blue-400/30 to-purple-400/30 rounded-xl blur-sm" />
+                  <div className="absolute bottom-[-10px] right-[-15px] w-[180px] h-[50px] z-0 animate-pulse bg-gradient-to-l from-orange-400/30 to-pink-400/30 rounded-xl blur-sm" />
                 </>
               )}
               <button
                 onClick={() => handleButtonClick(service.route)}
                 className={`relative z-10 ${colors[service.label]} font-semibold px-4 py-2 rounded-[20px] w-full h-full flex items-center justify-center hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl text-sm`}
               >
-                {serviceIcons[service.label]}
                 {service.label}
               </button>
             </div>

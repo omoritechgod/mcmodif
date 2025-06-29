@@ -80,7 +80,7 @@ const Hero: React.FC = () => {
 
   if (isMobile) {
     return (
-      <section className="relative min-h-screen w-full text-white overflow-hidden bg-gradient-to-br from-blue-900 via-purple-900 to-blue-800">
+      <section className="relative min-h-screen w-full text-white overflow-hidden bg-gradient-to-br from-[#043873] via-[#3B82F6] to-[#043873]">
         {/* Mobile Background */}
         <div className="absolute inset-0 z-0">
           <img
@@ -90,12 +90,13 @@ const Hero: React.FC = () => {
           />
         </div>
 
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 py-8">
+        {/* Add padding top to account for fixed header */}
+        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 py-8 pt-32">
           {/* Header Text */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-6 text-white leading-tight">
               Your Trusted
-              <span className="block bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent">
+              <span className="block bg-gradient-to-r from-yellow-400 via-[#F76300] to-red-500 bg-clip-text text-transparent">
                 Marketplace
               </span>
               <span className="block text-2xl mt-2">
@@ -136,7 +137,7 @@ const Hero: React.FC = () => {
       {/* Desktop Carousel Text */}
       <DesktopCarousel currentItem={carouselItems[current]} />
 
-      {/* Desktop Service Buttons - Scaled down and repositioned */}
+      {/* Desktop Service Buttons */}
       <DesktopServiceButtons heroIcons={heroIcons} animTarget={animTarget} />
     </section>
   );

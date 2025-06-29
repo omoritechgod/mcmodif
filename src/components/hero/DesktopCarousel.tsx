@@ -16,20 +16,20 @@ const DesktopCarousel: React.FC<DesktopCarouselProps> = ({ currentItem }) => {
   const { sub, btn1, btn2 } = currentItem;
 
   return (
-    <div className="absolute bottom-10 left-[200px] z-10 max-w-md">
+    <div className="absolute bottom-[15%] left-[12%] z-10 max-w-md">
       <p className="text-base text-white/90 mb-6 leading-relaxed">
         {sub}
       </p>
       <div className="flex gap-4">
         <button 
           onClick={() => navigate('/signup')}
-          className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold text-sm hover:scale-105 transition-all duration-300 shadow-lg"
+          className="bg-[#3B82F6] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:scale-105 transition-all duration-300 shadow-lg"
         >
           {btn1}
         </button>
         <button 
           onClick={() => navigate('/signup')}
-          className="bg-orange-500 text-white px-6 py-3 rounded-xl font-semibold text-sm hover:scale-105 transition-all duration-300 shadow-lg"
+          className="bg-[#F76300] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:scale-105 transition-all duration-300 shadow-lg"
         >
           {btn2}
         </button>

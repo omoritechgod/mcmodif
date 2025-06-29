@@ -11,12 +11,12 @@ const ServiceButtonsGrid: React.FC = () => {
   const navigate = useNavigate();
 
   const serviceButtons: ServiceButton[] = [
-    { label: "Ride Hailing", route: "/ride-hailing", bgColor: "bg-blue-600" },
-    { label: "Food Delivery", route: "/food-delivery", bgColor: "bg-orange-500" },
-    { label: "E-commerce", route: "/ecommerce", bgColor: "bg-green-600" },
-    { label: "Auto Maintenance", route: "/auto-maintenance", bgColor: "bg-purple-600" },
-    { label: "Service Apartments", route: "/service-apartments", bgColor: "bg-red-600" },
-    { label: "General Services", route: "/general-services", bgColor: "bg-yellow-600" },
+    { label: "Ride Hailing", route: "/ride-hailing", bgColor: "bg-[#3B82F6]" },
+    { label: "Food Delivery", route: "/food-delivery", bgColor: "bg-[#F76300]" },
+    { label: "E-commerce", route: "/ecommerce", bgColor: "bg-[#043873]" },
+    { label: "Auto Maintenance", route: "/auto-maintenance", bgColor: "bg-[#4F9CF9]" },
+    { label: "Service Apartments", route: "/service-apartments", bgColor: "bg-[#36C6FF]" },
+    { label: "General Services", route: "/general-services", bgColor: "bg-[#FFE492] text-[#043873]" },
   ];
 
   const handleButtonClick = (route: string) => {
