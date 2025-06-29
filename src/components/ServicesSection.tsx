@@ -10,8 +10,11 @@ import {
   Star,
   Shield
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const ServicesSection: React.FC = () => {
+  const navigate = useNavigate();
+
   const services = [
     {
       icon: <Bike className="text-blue-600" size={40} />,
@@ -19,7 +22,8 @@ const ServicesSection: React.FC = () => {
       description: "Quick, safe, and affordable motorcycle rides with real-time tracking and verified riders.",
       features: ["Real-time tracking", "Verified riders", "Instant booking"],
       color: "blue",
-      image: "https://images.pexels.com/photos/1119796/pexels-photo-1119796.jpeg?auto=compress&cs=tinysrgb&w=500"
+      image: "https://images.pexels.com/photos/1119796/pexels-photo-1119796.jpeg?auto=compress&cs=tinysrgb&w=500",
+      route: "/ride-hailing"
     },
     {
       icon: <UtensilsCrossed className="text-orange-600" size={40} />,
@@ -27,7 +31,8 @@ const ServicesSection: React.FC = () => {
       description: "Fresh meals delivered fast from your favorite local restaurants with sealed packaging.",
       features: ["Fresh & sealed", "Fast delivery", "Local restaurants"],
       color: "orange",
-      image: "https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg?auto=compress&cs=tinysrgb&w=500"
+      image: "https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg?auto=compress&cs=tinysrgb&w=500",
+      route: "/food-delivery"
     },
     {
       icon: <Home className="text-emerald-600" size={40} />,
@@ -35,7 +40,8 @@ const ServicesSection: React.FC = () => {
       description: "Comfortable short-term stays in verified apartments, hostels, and hotels.",
       features: ["Verified listings", "Flexible booking", "Secure payments"],
       color: "emerald",
-      image: "https://images.pexels.com/photos/439391/pexels-photo-439391.jpeg?auto=compress&cs=tinysrgb&w=500"
+      image: "https://images.pexels.com/photos/439391/pexels-photo-439391.jpeg?auto=compress&cs=tinysrgb&w=500",
+      route: "/service-apartments"
     },
     {
       icon: <ShoppingBag className="text-purple-600" size={40} />,
@@ -43,7 +49,8 @@ const ServicesSection: React.FC = () => {
       description: "Shop from verified vendors with secure transactions and reliable delivery.",
       features: ["Verified vendors", "Secure escrow", "Quality products"],
       color: "purple",
-      image: "https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=500"
+      image: "https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=500",
+      route: "/ecommerce"
     },
     {
       icon: <Wrench className="text-red-600" size={40} />,
@@ -51,7 +58,8 @@ const ServicesSection: React.FC = () => {
       description: "Connect with skilled mechanics for reliable car repairs and maintenance services.",
       features: ["Skilled mechanics", "Fair pricing", "Quality service"],
       color: "red",
-      image: "https://images.pexels.com/photos/3806288/pexels-photo-3806288.jpeg?auto=compress&cs=tinysrgb&w=500"
+      image: "https://images.pexels.com/photos/3806288/pexels-photo-3806288.jpeg?auto=compress&cs=tinysrgb&w=500",
+      route: "/auto-maintenance"
     },
     {
       icon: <Users className="text-indigo-600" size={40} />,
@@ -59,7 +67,8 @@ const ServicesSection: React.FC = () => {
       description: "Find trusted professionals for home services, repairs, and specialized tasks.",
       features: ["Trusted professionals", "Wide range", "Quality assured"],
       color: "indigo",
-      image: "https://images.pexels.com/photos/5691608/pexels-photo-5691608.jpeg?auto=compress&cs=tinysrgb&w=500"
+      image: "https://images.pexels.com/photos/5691608/pexels-photo-5691608.jpeg?auto=compress&cs=tinysrgb&w=500",
+      route: "/general-services"
     }
   ];
 
@@ -82,7 +91,8 @@ const ServicesSection: React.FC = () => {
           {services.map((service, index) => (
             <div 
               key={index}
-              className="service-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl group"
+              className="service-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl group cursor-pointer"
+              onClick={() => navigate(service.route)}
             >
               {/* Service Image */}
               <div className="relative h-48 overflow-hidden">
