@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Menu, X, ShoppingBag, User, Bell } from 'lucide-react';
+import { Menu, X, User, Bell } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <header className="bg-white shadow-lg sticky top-0 z-50 backdrop-blur-sm bg-white/95">
@@ -35,10 +37,16 @@ const Header: React.FC = () => {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <button className="text-gray-700 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors">
+            <button 
+              onClick={() => navigate('/login')}
+              className="text-gray-700 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors"
+            >
               Sign In
             </button>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
+            <button 
+              onClick={() => navigate('/signup')}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors"
+            >
               Get Started
             </button>
           </div>
@@ -71,10 +79,16 @@ const Header: React.FC = () => {
                 FAQ
               </a>
               <div className="pt-4 space-y-2">
-                <button className="block w-full text-left text-gray-700 hover:text-blue-600 px-3 py-2 text-base font-medium">
+                <button 
+                  onClick={() => navigate('/login')}
+                  className="block w-full text-left text-gray-700 hover:text-blue-600 px-3 py-2 text-base font-medium"
+                >
                   Sign In
                 </button>
-                <button className="block w-full bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-base font-medium text-center">
+                <button 
+                  onClick={() => navigate('/signup')}
+                  className="block w-full bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-base font-medium text-center"
+                >
                   Get Started
                 </button>
               </div>
