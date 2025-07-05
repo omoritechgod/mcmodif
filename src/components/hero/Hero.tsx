@@ -80,7 +80,7 @@ const Hero: React.FC = () => {
 
   if (isMobile) {
     return (
-      <section className="relative min-h-screen w-full text-white overflow-hidden bg-gradient-to-br from-[#043873] via-[#3B82F6] to-[#043873]">
+      <section className="relative min-h-screen w-full text-white overflow-hidden bg-gradient-to-br from-[#043873] via-[#3B82F6] to-purple-600">
         {/* Mobile Background */}
         <div className="absolute inset-0 z-0">
           <img
@@ -134,10 +134,10 @@ const Hero: React.FC = () => {
         backgroundImage: `url(${bgGif})`,
       }}
     >
-      {/* Desktop Carousel Text */}
+      {/* Desktop Carousel Text - Moved down to avoid overlap */}
       <DesktopCarousel currentItem={carouselItems[current]} />
 
-      {/* Desktop Service Buttons */}
+      {/* Desktop Service Buttons - Moved down to avoid overlap */}
       <DesktopServiceButtons heroIcons={heroIcons} animTarget={animTarget} />
     </section>
   );
