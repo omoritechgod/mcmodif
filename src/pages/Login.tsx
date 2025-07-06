@@ -5,15 +5,11 @@ import { useNavigate } from 'react-router-dom';
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     rememberMe: false
   });
-
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -23,46 +19,11 @@ const Login: React.FC = () => {
     }));
   };
 
-  const routeUserToDashboard = (user: any) => {
-    if (user.user_type === 'vendor' && user.vendor) {
-      const vendorCategory = user.vendor.category;
-      switch (vendorCategory) {
-        case 'mechanic':
-          navigate('/dashboard/mechanic');
-          break;
-        case 'rider':
-          navigate('/dashboard/rider');
-          break;
-        case 'product':
-          navigate('/dashboard/product-vendor');
-          break;
-        case 'service-apartment':
-          navigate('/dashboard/apartment');
-          break;
-        case 'service':
-          navigate('/dashboard/service-vendor');
-          break;
-        case 'food':
-          navigate('/dashboard/food-vendor');
-          break;
-        default:
-          navigate('/dashboard/vendor');
-      }
-    } else if (user.user_type === 'user') {
-      navigate('/dashboard/user');
-    } else {
-      navigate('/dashboard');
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setErrorMessage('');
 
     try {
-      // Login request
-      const loginResponse = await fetch(`${BASE_URL}/api/login`, {
+      const response = await fetch('http://localhost:8000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -73,47 +34,49 @@ const Login: React.FC = () => {
         }),
       });
 
-      const loginText = await loginResponse.text();
-      let loginData;
-      try {
-        loginData = JSON.parse(loginText);
-      } catch {
-        throw new Error('Invalid response from server');
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || 'Login failed');
+        return;
       }
 
-      if (!loginResponse.ok) {
-        throw new Error(loginData?.message || 'Login failed');
+      // Save token to localStorage or context
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('vendor', JSON.stringify(data.vendor));
+
+      // Redirect logic based on role
+      if (data.user.user_type === 'vendor' && data.vendor) {
+        switch (data.vendor.category) {
+          case 'mechanic':
+            navigate('/dashboard/mechanic');
+            break;
+          case 'rider':
+            navigate('/dashboard/rider');
+            break;
+          case 'product_vendor':
+            navigate('/dashboard/product-vendor');
+            break;
+          case 'service_vendor':
+            navigate('/dashboard/service-vendor');
+            break;
+          case 'food_vendor':
+            navigate('/dashboard/food-vendor');
+            break;
+          case 'service-apartment':
+          case 'apartment':
+            navigate('/dashboard/apartment');
+            break;
+          default:
+            navigate('/dashboard/vendor');
+        }
+      } else {
+        navigate('/dashboard/user');
       }
-
-      if (!loginData.token) {
-        throw new Error('No authentication token received');
-      }
-
-      // Store the token
-      localStorage.setItem('token', loginData.token);
-
-      // Fetch user details
-      const userResponse = await fetch(`${BASE_URL}/api/me`, {
-        headers: {
-          'Authorization': `Bearer ${loginData.token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!userResponse.ok) {
-        throw new Error('Failed to fetch user details');
-      }
-
-      const userData = await userResponse.json();
-      
-      // Route user to appropriate dashboard
-      routeUserToDashboard(userData);
-
-    } catch (error: any) {
-      setErrorMessage(error.message || 'An error occurred during login');
-      localStorage.removeItem('token'); // Clean up on error
-    } finally {
-      setIsLoading(false);
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('Something went wrong');
     }
   };
 
@@ -156,13 +119,6 @@ const Login: React.FC = () => {
             Sign in to your McDee account
           </p>
         </div>
-
-        {/* Error Message */}
-        {errorMessage && (
-          <div className="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
-            <p className="text-red-800">{errorMessage}</p>
-          </div>
-        )}
 
         {/* Login Form */}
         <div className="bg-white rounded-2xl shadow-lg p-8">
@@ -232,17 +188,9 @@ const Login: React.FC = () => {
 
             <button
               type="submit"
-              disabled={isLoading}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors duration-300 flex items-center justify-center gap-2"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-xl transition-colors duration-300"
             >
-              {isLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  Signing In...
-                </>
-              ) : (
-                'Sign In'
-              )}
+              Sign In
             </button>
           </form>
         </div>
