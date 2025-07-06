@@ -11,6 +11,17 @@ import ECommerce from './pages/ECommerce';
 import AutoMaintenance from './pages/AutoMaintenance';
 import GeneralServices from './pages/GeneralServices';
 import VendorDashboard from './components/dashboard/VendorDashboard';
+
+// Import new dashboard components
+import UserDashboard from './pages/dashboard/user';
+import MechanicDashboard from './pages/dashboard/mechanic';
+import RiderDashboard from './pages/dashboard/rider';
+import ProductVendorDashboard from './pages/dashboard/product-vendor';
+import ServiceVendorDashboard from './pages/dashboard/service-vendor';
+import ApartmentDashboard from './pages/dashboard/apartment';
+import FoodVendorDashboard from './pages/dashboard/food-vendor';
+import GeneralVendorDashboard from './pages/dashboard/vendor';
+
 import './App.css';
 
 function App() {
@@ -29,6 +40,16 @@ function App() {
           <Route path="/ecommerce" element={<ECommerce />} />
           <Route path="/auto-maintenance" element={<AutoMaintenance />} />
           <Route path="/general-services" element={<GeneralServices />} />
+          
+          {/* New Dashboard Routes */}
+          <Route path="/dashboard/user" element={<UserDashboard />} />
+          <Route path="/dashboard/mechanic" element={<MechanicDashboard />} />
+          <Route path="/dashboard/rider" element={<RiderDashboard />} />
+          <Route path="/dashboard/product-vendor" element={<ProductVendorDashboard />} />
+          <Route path="/dashboard/service-vendor" element={<ServiceVendorDashboard />} />
+          <Route path="/dashboard/apartment" element={<ApartmentDashboard />} />
+          <Route path="/dashboard/food-vendor" element={<FoodVendorDashboard />} />
+          <Route path="/dashboard/vendor" element={<GeneralVendorDashboard />} />
         </Routes>
       </div>
     </Router>

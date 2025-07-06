@@ -5,11 +5,15 @@ import { useNavigate } from 'react-router-dom';
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     rememberMe: false
   });
+
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -19,10 +23,98 @@ const Login: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const routeUserToDashboard = (user: any) => {
+    if (user.user_type === 'vendor' && user.vendor) {
+      const vendorCategory = user.vendor.category;
+      switch (vendorCategory) {
+        case 'mechanic':
+          navigate('/dashboard/mechanic');
+          break;
+        case 'rider':
+          navigate('/dashboard/rider');
+          break;
+        case 'product':
+          navigate('/dashboard/product-vendor');
+          break;
+        case 'service-apartment':
+          navigate('/dashboard/apartment');
+          break;
+        case 'service':
+          navigate('/dashboard/service-vendor');
+          break;
+        case 'food':
+          navigate('/dashboard/food-vendor');
+          break;
+        default:
+          navigate('/dashboard/vendor');
+      }
+    } else if (user.user_type === 'user') {
+      navigate('/dashboard/user');
+    } else {
+      navigate('/dashboard');
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login
-    console.log('Login submitted:', formData);
+    setIsLoading(true);
+    setErrorMessage('');
+
+    try {
+      // Login request
+      const loginResponse = await fetch(`${BASE_URL}/api/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const loginText = await loginResponse.text();
+      let loginData;
+      try {
+        loginData = JSON.parse(loginText);
+      } catch {
+        throw new Error('Invalid response from server');
+      }
+
+      if (!loginResponse.ok) {
+        throw new Error(loginData?.message || 'Login failed');
+      }
+
+      if (!loginData.token) {
+        throw new Error('No authentication token received');
+      }
+
+      // Store the token
+      localStorage.setItem('token', loginData.token);
+
+      // Fetch user details
+      const userResponse = await fetch(`${BASE_URL}/api/me`, {
+        headers: {
+          'Authorization': `Bearer ${loginData.token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!userResponse.ok) {
+        throw new Error('Failed to fetch user details');
+      }
+
+      const userData = await userResponse.json();
+      
+      // Route user to appropriate dashboard
+      routeUserToDashboard(userData);
+
+    } catch (error: any) {
+      setErrorMessage(error.message || 'An error occurred during login');
+      localStorage.removeItem('token'); // Clean up on error
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -64,6 +156,13 @@ const Login: React.FC = () => {
             Sign in to your McDee account
           </p>
         </div>
+
+        {/* Error Message */}
+        {errorMessage && (
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+            <p className="text-red-800">{errorMessage}</p>
+          </div>
+        )}
 
         {/* Login Form */}
         <div className="bg-white rounded-2xl shadow-lg p-8">
@@ -133,9 +232,17 @@ const Login: React.FC = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-xl transition-colors duration-300"
+              disabled={isLoading}
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors duration-300 flex items-center justify-center gap-2"
             >
-              Sign In
+              {isLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  Signing In...
+                </>
+              ) : (
+                'Sign In'
+              )}
             </button>
           </form>
         </div>
