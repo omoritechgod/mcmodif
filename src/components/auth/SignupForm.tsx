@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, User, Building, Mail, Lock, Phone, MapPin } from 'lucide-react';
+import { Eye, EyeOff, User, Mail, Lock, Phone } from 'lucide-react';
 
 interface SignupFormProps {
   userType: 'user' | 'vendor';
+  onSubmit: (formData: any) => void;
+  isLoading?: boolean;
 }
 
-const SignupForm: React.FC<SignupFormProps> = ({ userType }) => {
+const SignupForm: React.FC<SignupFormProps> = ({ userType, onSubmit, isLoading = false }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -15,27 +17,10 @@ const SignupForm: React.FC<SignupFormProps> = ({ userType }) => {
     phone: '',
     password: '',
     confirmPassword: '',
-    // Vendor specific fields
-    businessName: '',
-    businessType: 'individual', // individual or business
-    businessAddress: '',
-    nin: '',
-    cacNumber: '',
-    serviceCategory: '',
     agreeToTerms: false
   });
 
-  const serviceCategories = [
-    'Food & Restaurant',
-    'Transportation',
-    'Accommodation',
-    'E-commerce',
-    'Auto Maintenance',
-    'General Services',
-    'Other'
-  ];
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -45,8 +30,28 @@ const SignupForm: React.FC<SignupFormProps> = ({ userType }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', { userType, ...formData });
+    
+    // Basic validation
+    if (formData.password !== formData.confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+
+    if (!formData.agreeToTerms) {
+      alert('Please agree to the terms and conditions');
+      return;
+    }
+
+    // Call the onSubmit prop with form data
+    onSubmit({
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      password: formData.password,
+      userType: userType,
+      agreeToTerms: formData.agreeToTerms
+    });
   };
 
   return (
@@ -125,124 +130,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ userType }) => {
           />
         </div>
       </div>
-
-      {/* Vendor Specific Fields */}
-      {userType === 'vendor' && (
-        <>
-          <div className="border-t border-gray-200 pt-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <Building size={20} />
-              Business Information
-            </h3>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Business Type *
-                </label>
-                <select
-                  name="businessType"
-                  value={formData.businessType}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                >
-                  <option value="individual">Individual</option>
-                  <option value="business">Registered Business</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {formData.businessType === 'individual' ? 'Service Name' : 'Business Name'} *
-                </label>
-                <div className="relative">
-                  <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                  <input
-                    type="text"
-                    name="businessName"
-                    value={formData.businessName}
-                    onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder={formData.businessType === 'individual' ? 'e.g., John\'s Catering Service' : 'Enter your business name'}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Service Category *
-                </label>
-                <select
-                  name="serviceCategory"
-                  value={formData.serviceCategory}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                >
-                  <option value="">Select a category</option>
-                  {serviceCategories.map((category) => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Business Address *
-                </label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                  <input
-                    type="text"
-                    name="businessAddress"
-                    value={formData.businessAddress}
-                    onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Enter your business address"
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Verification Documents */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    NIN (National Identification Number) *
-                  </label>
-                  <input
-                    type="text"
-                    name="nin"
-                    value={formData.nin}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Enter your NIN"
-                    required
-                  />
-                </div>
-
-                {formData.businessType === 'business' && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      CAC Registration Number
-                    </label>
-                    <input
-                      type="text"
-                      name="cacNumber"
-                      value={formData.cacNumber}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Enter CAC number"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </>
-      )}
 
       {/* Password Fields */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -327,9 +214,17 @@ const SignupForm: React.FC<SignupFormProps> = ({ userType }) => {
       {/* Submit Button */}
       <button
         type="submit"
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-xl transition-colors duration-300"
+        disabled={isLoading}
+        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors duration-300 flex items-center justify-center gap-2"
       >
-        Create {userType === 'vendor' ? 'Vendor' : 'User'} Account
+        {isLoading ? (
+          <>
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+            Creating Account...
+          </>
+        ) : (
+          `Create ${userType === 'vendor' ? 'Vendor' : 'User'} Account`
+        )}
       </button>
     </form>
   );
