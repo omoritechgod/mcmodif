@@ -40,45 +40,18 @@ const Signup: React.FC = () => {
     setSuccessMessage('');
 
     try {
-      const response = await fetch(`${BASE_URL}/api/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      const text = await response.text();
-      let result;
-      try {
-        result = JSON.parse(text);
-      } catch {
-        throw new Error('Server returned invalid response');
-      }
-
-      if (!response.ok) {
-        throw new Error(result?.message || 'Registration failed');
-      }
+      const { userApi } = await import('../services/userApi');
+      
+      const result = await userApi.register(formData);
 
       if (formData.user_type === 'user') {
         setSuccessMessage('Registration successful! Please check your email for verification.');
         setTimeout(() => navigate('/login'), 3000);
       } else {
-        const loginRes = await fetch(`${BASE_URL}/api/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: formData.email, password: formData.password }),
+        const loginData = await userApi.login({
+          email: formData.email,
+          password: formData.password,
         });
-
-        const loginText = await loginRes.text();
-        let loginData;
-        try {
-          loginData = JSON.parse(loginText);
-        } catch {
-          throw new Error('Login response not valid JSON');
-        }
-
-        if (!loginRes.ok || !loginData.token) {
-          throw new Error(loginData.message || 'Auto-login failed');
-        }
 
         localStorage.setItem('token', loginData.token);
         setInitialRegistrationData(formData);
@@ -97,34 +70,11 @@ const Signup: React.FC = () => {
     setErrorMessage('');
     setSuccessMessage('');
 
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setErrorMessage('Authentication token not found. Please log in again.');
-      setIsLoading(false);
-      return;
-    }
 
     try {
-      const response = await fetch(`${BASE_URL}/api/vendor/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(vendorData),
-      });
-
-      const text = await response.text();
-      let result;
-      try {
-        result = JSON.parse(text);
-      } catch {
-        throw new Error('Vendor details response not valid JSON');
-      }
-
-      if (!response.ok) {
-        throw new Error(result?.message || 'Vendor setup failed');
-      }
+      const { vendorApi } = await import('../services/vendorApi');
+      
+      await vendorApi.registerVendor(vendorData);
 
       setVendorDetailsData(vendorData);
       setRegistrationStep('vendorCategorySpecific');
@@ -145,56 +95,29 @@ const Signup: React.FC = () => {
     setIsLoading(true);
     setErrorMessage('');
 
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setErrorMessage('Authentication token not found. Please log in again.');
-      setIsLoading(false);
-      return;
-    }
 
     try {
-      let endpoint = '';
-      const payload = { ...categorySpecificData };
+      const { vendorApi } = await import('../services/vendorApi');
+      let result;
 
       switch (vendorDetailsData.category) {
         case 'mechanic':
-          endpoint = '/api/vendor/mechanic/setup';
-          break;
-        case 'product':
-          endpoint = '/api/vendor/product/setup';
+          result = await vendorApi.setupMechanic(categorySpecificData);
           break;
         case 'rider':
-          endpoint = '/api/vendor/rider/setup';
+          result = await vendorApi.setupRider(categorySpecificData);
+          break;
+        case 'product':
+          result = await vendorApi.setupProductVendor(categorySpecificData);
           break;
         case 'service-apartment':
-          endpoint = '/api/vendor/apartment/setup';
+          result = await vendorApi.setupServiceApartment(categorySpecificData);
           break;
         case 'service':
-          endpoint = '/api/vendor/service/setup';
+          result = await vendorApi.setupServiceVendor(categorySpecificData);
           break;
         default:
           throw new Error('Invalid vendor category');
-      }
-
-      const response = await fetch(`${BASE_URL}${endpoint}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const text = await response.text();
-      let result;
-      try {
-        result = JSON.parse(text);
-      } catch {
-        throw new Error('Vendor category response not valid JSON');
-      }
-
-      if (!response.ok) {
-        throw new Error(result?.message || 'Vendor registration failed');
       }
 
       setSuccessMessage('Vendor registration completed successfully! Your account will be reviewed for verification.');

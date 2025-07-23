@@ -61,27 +61,8 @@ const UserProfile: React.FC = () => {
     setMessage({ type: '', text: '' });
 
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-
-      const formData = new FormData();
-      formData.append('profile_image', selectedFile);
-
-      const response = await fetch(`${BASE_URL}/api/profile/update-image`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to update profile image');
-      }
+      const { userApi } = await import('../../../services/userApi');
+      const data = await userApi.updateProfileImage(selectedFile);
 
       // Update user data in state and localStorage
       const updatedUser = { ...user, profile_image: data.profile_image_url };

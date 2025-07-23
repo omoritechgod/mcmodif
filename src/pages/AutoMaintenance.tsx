@@ -13,6 +13,8 @@ const AutoMaintenance: React.FC = () => {
   const [needsTowing, setNeedsTowing] = useState('no');
   const [selectedMechanic, setSelectedMechanic] = useState<any>(null);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+  const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState({ type: '', text: '' });
 
   const serviceTypes = [
     { id: 'engine', name: 'Engine Repair', icon: <Settings size={24} />, price: '₦15,000 - ₦50,000' },
@@ -103,9 +105,42 @@ const AutoMaintenance: React.FC = () => {
     }
   };
 
-  const handleSubmitRequest = () => {
-    if (selectedService && carIssue && location) {
+  const handleSubmitRequest = async () => {
+    if (!selectedService || !carIssue || !location) {
+      setSubmitMessage({ type: 'error', text: 'Please fill in all required fields' });
+      return;
+    }
+
+    setIsSubmittingRequest(true);
+    setSubmitMessage({ type: '', text: '' });
+
+    try {
+      const { userApi } = await import('../services/userApi');
+      
+      const requestData = {
+        location: location,
+        service_type: selectedService,
+        issue: carIssue,
+        needs_towing: needsTowing === 'yes'
+      };
+
+      const response = await userApi.submitMaintenanceRequest(requestData);
+      
+      setSubmitMessage({ 
+        type: 'success', 
+        text: response.message || 'Maintenance request submitted successfully!' 
+      });
+      
+      // Move to mechanics step after successful submission
       setActiveStep('mechanics');
+    } catch (error: any) {
+      console.error('Error submitting maintenance request:', error);
+      setSubmitMessage({ 
+        type: 'error', 
+        text: error.message || 'Failed to submit maintenance request. Please try again.' 
+      });
+    } finally {
+      setIsSubmittingRequest(false);
     }
   };
 
@@ -224,6 +259,18 @@ const AutoMaintenance: React.FC = () => {
         {/* Step 1: Report Issue */}
         {activeStep === 'report' && (
           <div className="max-w-2xl mx-auto">
+            {/* Message Display */}
+            {submitMessage.text && (
+              <div className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${
+                submitMessage.type === 'success' 
+                  ? 'bg-green-50 border border-green-200 text-green-800' 
+                  : 'bg-red-50 border border-red-200 text-red-800'
+              }`}>
+                {submitMessage.type === 'success' ? <CheckCircle size={20} /> : <AlertTriangle size={20} />}
+                <span>{submitMessage.text}</span>
+              </div>
+            )}
+
             <div className="bg-white rounded-2xl shadow-lg p-6">
               <div className="flex items-center mb-6">
                 <AlertTriangle className="w-6 h-6 mr-3 text-[#F76300]" />
@@ -261,6 +308,42 @@ const AutoMaintenance: React.FC = () => {
 
                 {/* Service Types */}
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Select Service Type *
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter service type or select from popular services below"
+                    value={selectedService}
+                    onChange={(e) => setSelectedService(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#043873] focus:border-transparent mb-4"
+                  />
+                  
+                  <div className="mb-4">
+                    <p className="text-sm font-medium text-gray-700 mb-3">Popular Services:</p>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {serviceTypes.map((service) => (
+                        <button
+                          key={service.id}
+                          type="button"
+                          onClick={() => setSelectedService(service.name)}
+                          className={`p-3 rounded-xl border-2 transition-colors text-left hover:border-[#043873] hover:bg-blue-50 ${
+                            selectedService === service.name
+                              ? 'border-[#043873] bg-blue-50'
+                              : 'border-gray-200'
+                          }`}
+                        >
+                          <div className="text-[#043873] mb-2">{service.icon}</div>
+                          <div className="font-semibold text-gray-900 mb-1 text-sm">{service.name}</div>
+                          <div className="text-xs text-gray-600">{service.price}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Remove the old service types grid */}
+                {/* <div>
                   <label className="block text-sm font-medium text-gray-700 mb-4">
                     Select Service Type *
                   </label>
@@ -268,9 +351,9 @@ const AutoMaintenance: React.FC = () => {
                     {serviceTypes.map((service) => (
                       <button
                         key={service.id}
-                        onClick={() => setSelectedService(service.id)}
+                        onClick={() => setSelectedService(service.name)}
                         className={`p-4 rounded-xl border-2 transition-colors text-left ${
-                          selectedService === service.id
+                          selectedService === service.name
                             ? 'border-[#043873] bg-blue-50'
                             : 'border-gray-200 hover:border-gray-300'
                         }`}
@@ -281,7 +364,7 @@ const AutoMaintenance: React.FC = () => {
                       </button>
                     ))}
                   </div>
-                </div>
+                </div> */}
 
                 {/* Issue Description */}
                 <div>
@@ -348,10 +431,17 @@ const AutoMaintenance: React.FC = () => {
 
                 <button 
                   onClick={handleSubmitRequest}
-                  disabled={!selectedService || !carIssue || !location}
-                  className="w-full bg-[#043873] hover:bg-[#043873]/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors"
+                  disabled={!selectedService || !carIssue || !location || isSubmittingRequest}
+                  className="w-full bg-[#043873] hover:bg-[#043873]/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors flex items-center justify-center gap-2"
                 >
-                  Find Nearby Mechanics
+                  {isSubmittingRequest ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      Submitting Request...
+                    </>
+                  ) : (
+                    'Submit Maintenance Request'
+                  )}
                 </button>
               </div>
             </div>
@@ -518,7 +608,7 @@ const AutoMaintenance: React.FC = () => {
                   <h4 className="font-semibold mb-3">Service Details</h4>
                   <div className="space-y-2 text-sm">
                     <div><span className="font-medium">Location:</span> {location}</div>
-                    <div><span className="font-medium">Service Type:</span> {serviceTypes.find(s => s.id === selectedService)?.name}</div>
+                    <div><span className="font-medium">Service Type:</span> {selectedService}</div>
                     <div><span className="font-medium">Issue:</span> {carIssue}</div>
                     <div><span className="font-medium">Towing needed:</span> {needsTowing === 'yes' ? 'Yes' : 'No'}</div>
                     <div><span className="font-medium">Estimated cost:</span> {selectedMechanic.priceRange}</div>

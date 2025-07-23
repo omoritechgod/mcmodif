@@ -23,23 +23,12 @@ const Login: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:8000/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
+      const { userApi } = await import('../services/userApi');
+      
+      const data = await userApi.login({
+        email: formData.email,
+        password: formData.password,
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        alert(data.message || 'Login failed');
-        return;
-      }
 
       // Save token to localStorage or context
       localStorage.setItem('token', data.token);
@@ -76,7 +65,7 @@ const Login: React.FC = () => {
       }
     } catch (error) {
       console.error('Login error:', error);
-      alert('Something went wrong');
+      alert(error instanceof Error ? error.message : 'Something went wrong');
     }
   };
 

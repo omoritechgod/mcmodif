@@ -46,18 +46,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/api/me`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch user data');
-      }
-
-      const userData = await response.json();
+      const { userApi } = await import('../../services/userApi');
+      const userData = await userApi.getProfile();
+      
       setUser({
         ...userData.user,
         vendor: userData.vendor,
