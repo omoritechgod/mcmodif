@@ -50,53 +50,53 @@ export interface ServiceVendorSetupData {
 export class VendorApiService {
   // Vendor registration
   async registerVendor(data: VendorRegistrationData): Promise<ApiResponse> {
-    return apiClient.post('/vendor/register', data);
+    return apiClient.post('/api/vendor/register', data);
   }
 
   // Category-specific setup
   async setupMechanic(data: MechanicSetupData): Promise<ApiResponse> {
-    return apiClient.post('/vendor/mechanic/setup', data);
+    return apiClient.post('/api/vendor/mechanic/setup', data);
   }
 
   async setupRider(data: RiderSetupData): Promise<ApiResponse> {
-    return apiClient.post('/vendor/rider/setup', data);
+    return apiClient.post('/api/vendor/rider/setup', data);
   }
 
   async setupProductVendor(data: ProductVendorSetupData): Promise<ApiResponse> {
-    return apiClient.post('/vendor/product/setup', data);
+    return apiClient.post('/api/vendor/product/setup', data);
   }
 
   async setupServiceApartment(data: ServiceApartmentSetupData): Promise<ApiResponse> {
-    return apiClient.post('/vendor/apartment/setup', data);
+    return apiClient.post('/api/vendor/apartment/setup', data);
   }
 
   async setupServiceVendor(data: ServiceVendorSetupData): Promise<ApiResponse> {
-    return apiClient.post('/vendor/service/setup', data);
+    return apiClient.post('/api/vendor/service/setup', data);
   }
 
   // Dashboard data (placeholders for future implementation)
   async getMechanicDashboard(): Promise<any> {
-    return apiClient.get('/vendor/mechanic/dashboard');
+    return apiClient.get('/api/vendor/mechanic/dashboard');
   }
 
   async getRiderDashboard(): Promise<any> {
-    return apiClient.get('/vendor/rider/dashboard');
+    return apiClient.get('/api/vendor/rider/dashboard');
   }
 
   async getProductVendorDashboard(): Promise<any> {
-    return apiClient.get('/vendor/product/dashboard');
+    return apiClient.get('/api/vendor/product/dashboard');
   }
 
   async getServiceVendorDashboard(): Promise<any> {
-    return apiClient.get('/vendor/service/dashboard');
+    return apiClient.get('/api/vendor/service/dashboard');
   }
 
   async getApartmentDashboard(): Promise<any> {
-    return apiClient.get('/vendor/apartment/dashboard');
+    return apiClient.get('/api/vendor/apartment/dashboard');
   }
 
   async getFoodVendorDashboard(): Promise<any> {
-    return apiClient.get('/vendor/food/dashboard');
+    return apiClient.get('/api/vendor/food/dashboard');
   }
 }
 
