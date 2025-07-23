@@ -72,7 +72,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       }
 
       const userData = await response.json();
-      setUser(userData);
+      setUser({
+        ...userData.user,
+        vendor: userData.vendor,
+      });
     } catch (error) {
       console.error('Error fetching user data:', error);
       localStorage.removeItem('token');
@@ -81,6 +84,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       setIsLoading(false);
     }
   };
+
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -274,7 +278,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center">
             <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
-              {user.name.charAt(0).toUpperCase()}
+              {(user && user.name) ? user.name.charAt(0).toUpperCase() : 'U'}
             </div>
             <div className="ml-3 flex-1">
               <p className="text-sm font-medium text-gray-900">{user.name}</p>
@@ -354,7 +358,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                    {user.name.charAt(0).toUpperCase()}
+                    {(user && user.name) ? user.name.charAt(0).toUpperCase() : 'U'}
                   </div>
                 </div>
               </div>
