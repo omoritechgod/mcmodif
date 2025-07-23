@@ -22,6 +22,9 @@ import ApartmentDashboard from './pages/dashboard/apartment';
 import FoodVendorDashboard from './pages/dashboard/food-vendor';
 import GeneralVendorDashboard from './pages/dashboard/vendor';
 
+// Import profile pages
+import UserProfile from './pages/dashboard/user/profile';
+
 import './App.css';
 
 function App() {
@@ -50,6 +53,16 @@ function App() {
           <Route path="/dashboard/apartment" element={<ApartmentDashboard />} />
           <Route path="/dashboard/food-vendor" element={<FoodVendorDashboard />} />
           <Route path="/dashboard/vendor" element={<GeneralVendorDashboard />} />
+          
+          {/* Profile Routes */}
+          <Route path="/dashboard/user/profile" element={<UserProfile />} />
+          <Route path="/dashboard/mechanic/profile" element={<UserProfile />} />
+          <Route path="/dashboard/rider/profile" element={<UserProfile />} />
+          <Route path="/dashboard/product-vendor/profile" element={<UserProfile />} />
+          <Route path="/dashboard/service-vendor/profile" element={<UserProfile />} />
+          <Route path="/dashboard/apartment/profile" element={<UserProfile />} />
+          <Route path="/dashboard/food-vendor/profile" element={<UserProfile />} />
+          <Route path="/dashboard/vendor/profile" element={<UserProfile />} />
         </Routes>
       </div>
     </Router>

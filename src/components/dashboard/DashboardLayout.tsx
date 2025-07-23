@@ -18,21 +18,7 @@ import {
   BarChart3,
   MessageCircle
 } from 'lucide-react';
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  user_type: 'user' | 'vendor';
-  vendor?: {
-    id: number;
-    category: string;
-    business_name: string;
-    vendor_type: string;
-    verification_status: string;
-  };
-}
+import { UserData, getDashboardPath, getPageTitle, getUserInitials } from '../../utils/dashboardUtils';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -41,7 +27,7 @@ interface DashboardLayoutProps {
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState(3);
@@ -76,9 +62,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         ...userData.user,
         vendor: userData.vendor,
       });
+      
+      // Update localStorage with fresh user data
+      localStorage.setItem('user', JSON.stringify({
+        ...userData.user,
+        vendor: userData.vendor,
+      }));
     } catch (error) {
       console.error('Error fetching user data:', error);
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('vendor');
       navigate('/login');
     } finally {
       setIsLoading(false);
@@ -88,6 +82,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('vendor');
     navigate('/login');
   };
 
@@ -95,10 +91,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     if (!user) return [];
 
     const baseItems = [
-      { icon: <Home size={20} />, label: 'Overview', path: getDashboardPath() },
-      { icon: <BarChart3 size={20} />, label: 'Analytics', path: `${getDashboardPath()}/analytics` },
-      { icon: <MessageCircle size={20} />, label: 'Messages', path: `${getDashboardPath()}/messages` },
-      { icon: <Settings size={20} />, label: 'Settings', path: `${getDashboardPath()}/settings` },
+      { icon: <Home size={20} />, label: 'Overview', path: getDashboardPath(user!) },
+      { icon: <BarChart3 size={20} />, label: 'Analytics', path: `${getDashboardPath(user!)}/analytics` },
+      { icon: <MessageCircle size={20} />, label: 'Messages', path: `${getDashboardPath(user!)}/messages` },
+      { icon: <User size={20} />, label: 'Profile', path: `${getDashboardPath(user!)}/profile` },
+      { icon: <Settings size={20} />, label: 'Settings', path: `${getDashboardPath(user!)}/settings` },
     ];
 
     if (user.user_type === 'user') {
@@ -107,7 +104,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { icon: <Wallet size={20} />, label: 'Wallet', path: '/dashboard/user/wallet' },
         { icon: <Package size={20} />, label: 'Orders', path: '/dashboard/user/orders' },
         { icon: <Car size={20} />, label: 'Rides', path: '/dashboard/user/rides' },
-        ...baseItems.slice(1),
+        ...baseItems.slice(1, 3),
+        ...baseItems.slice(3),
       ];
     }
 
@@ -161,60 +159,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     return [
       ...baseItems.slice(0, 1),
       ...vendorItems,
-      ...baseItems.slice(1),
+      ...baseItems.slice(1, 3),
+      ...baseItems.slice(3),
     ];
-  };
-
-  const getDashboardPath = () => {
-    if (!user) return '/dashboard';
-    
-    if (user.user_type === 'user') {
-      return '/dashboard/user';
-    }
-
-    const vendorCategory = user.vendor?.category;
-    switch (vendorCategory) {
-      case 'mechanic':
-        return '/dashboard/mechanic';
-      case 'rider':
-        return '/dashboard/rider';
-      case 'product':
-        return '/dashboard/product-vendor';
-      case 'service-apartment':
-        return '/dashboard/apartment';
-      case 'service':
-        return '/dashboard/service-vendor';
-      case 'food':
-        return '/dashboard/food-vendor';
-      default:
-        return '/dashboard/vendor';
-    }
-  };
-
-  const getPageTitle = () => {
-    if (!user) return 'Dashboard';
-    
-    if (user.user_type === 'user') {
-      return 'User Dashboard';
-    }
-
-    const vendorCategory = user.vendor?.category;
-    switch (vendorCategory) {
-      case 'mechanic':
-        return 'Mechanic Dashboard';
-      case 'rider':
-        return 'Rider Dashboard';
-      case 'product':
-        return 'Product Vendor Dashboard';
-      case 'service-apartment':
-        return 'Service Apartment Dashboard';
-      case 'service':
-        return 'Service Provider Dashboard';
-      case 'food':
-        return 'Food Vendor Dashboard';
-      default:
-        return 'Vendor Dashboard';
-    }
   };
 
   const getVerificationStatus = () => {
@@ -265,7 +212,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
-          <div className="text-2xl font-bold text-blue-600">McDee</div>
+          <button 
+            onClick={() => navigate('/')}
+            className="text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors"
+          >
+            McDee
+          </button>
           <button
             onClick={() => setSidebarOpen(false)}
             className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-600"
@@ -277,9 +229,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         {/* User Info */}
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center">
-            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
-              {(user && user.name) ? user.name.charAt(0).toUpperCase() : 'U'}
-            </div>
+            {user?.profile_image ? (
+              <img 
+                src={user.profile_image} 
+                alt={user.name}
+                className="w-10 h-10 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+                {getUserInitials(user?.name || '')}
+              </div>
+            )}
             <div className="ml-3 flex-1">
               <p className="text-sm font-medium text-gray-900">{user.name}</p>
               <p className="text-xs text-gray-500">{user.email}</p>
@@ -342,7 +302,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   <Menu size={20} />
                 </button>
                 <h1 className="ml-2 lg:ml-0 text-xl font-semibold text-gray-900">
-                  {getPageTitle()}
+                  {getPageTitle(user!)}
                 </h1>
               </div>
 
@@ -357,9 +317,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 </button>
                 
                 <div className="flex items-center">
-                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                    {(user && user.name) ? user.name.charAt(0).toUpperCase() : 'U'}
-                  </div>
+                  {user?.profile_image ? (
+                    <img 
+                      src={user.profile_image} 
+                      alt={user.name}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                      {getUserInitials(user?.name || '')}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
