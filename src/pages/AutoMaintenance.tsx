@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { ArrowLeft, MapPin, Wrench, Star, Phone, MessageCircle, Clock, DollarSign, Car, Zap, Droplets, Disc, Snowflake, Settings, AlertTriangle, CheckCircle, Locate, Truck, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { maintenanceApi } from '../services/maintenanceApi';
+import { logErrorToBackend } from '../utils/logError';
 
 type MaintenanceStep = 'report' | 'mechanics' | 'payment';
 
@@ -115,8 +117,6 @@ const AutoMaintenance: React.FC = () => {
     setSubmitMessage({ type: '', text: '' });
 
     try {
-      const { userApi } = await import('../services/userApi');
-      
       const requestData = {
         location: location,
         service_type: selectedService,
@@ -124,7 +124,7 @@ const AutoMaintenance: React.FC = () => {
         needs_towing: needsTowing === 'yes'
       };
 
-      const response = await userApi.submitMaintenanceRequest(requestData);
+      const response = await maintenanceApi.submitMaintenanceRequest(requestData);
       
       setSubmitMessage({ 
         type: 'success', 
@@ -139,6 +139,7 @@ const AutoMaintenance: React.FC = () => {
         type: 'error', 
         text: error.message || 'Failed to submit maintenance request. Please try again.' 
       });
+      await logErrorToBackend('Maintenance Request Submission', error);
     } finally {
       setIsSubmittingRequest(false);
     }

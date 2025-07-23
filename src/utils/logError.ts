@@ -1,7 +1,8 @@
+import { authApi } from '../services/authApi';
+
 export const logErrorToBackend = async (context: string, error: any) => {
   try {
-    const { userApi } = await import('../services/userApi');
-    await userApi.logError({
+    await authApi.logError({
       context,
       message: error?.message || 'Unknown error',
       stack: error?.stack || null,

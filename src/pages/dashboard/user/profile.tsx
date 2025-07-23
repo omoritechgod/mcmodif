@@ -11,6 +11,7 @@ import {
   Upload
 } from 'lucide-react';
 import { getStoredUser } from '../../../utils/dashboardUtils';
+import { authApi } from '../../../services/authApi';
 
 const UserProfile: React.FC = () => {
   const [user, setUser] = useState(getStoredUser());
@@ -61,8 +62,7 @@ const UserProfile: React.FC = () => {
     setMessage({ type: '', text: '' });
 
     try {
-      const { userApi } = await import('../../../services/userApi');
-      const data = await userApi.updateProfileImage(selectedFile);
+      const data = await authApi.updateProfileImage(selectedFile);
 
       // Update user data in state and localStorage
       const updatedUser = { ...user, profile_image: data.profile_image_url };

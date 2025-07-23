@@ -59,17 +59,23 @@ const Header: React.FC = () => {
               onClick={() => setProfileMenuOpen(!profileMenuOpen)}
               className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
             >
-              {user?.profile_image ? (
-                <img 
-                  src={user.profile_image} 
-                  alt={user.name}
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-8 h-8 bg-[#043873] rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                  {getUserInitials(user?.name || '')}
-                </div>
-              )}
+              <div className="relative">
+                {user?.profile_image ? (
+                  <img 
+                    src={user.profile_image} 
+                    alt={user.name}
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-8 h-8 bg-[#043873] rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                    {getUserInitials(user?.name || '')}
+                  </div>
+                )}
+                {/* Verification Badge */}
+                {user?.user_type === 'vendor' && user.vendor?.is_verified && (
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                )}
+              </div>
               <span className="text-[#043873] font-medium">{user?.name}</span>
             </button>
 
@@ -103,6 +109,7 @@ const Header: React.FC = () => {
                 >
                   <LogOut size={16} />
                   Logout
+                </div>
                 </button>
               </div>
             )}
@@ -161,21 +168,33 @@ const Header: React.FC = () => {
           {isLoggedIn ? (
             <div className="flex flex-col gap-[10px] mt-4">
               <div className="flex items-center gap-3 p-3 bg-white/20 rounded-lg">
-                {user?.profile_image ? (
-                  <img 
-                    src={user.profile_image} 
-                    alt={user.name}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-10 h-10 bg-[#043873] rounded-full flex items-center justify-center text-white font-semibold">
-                    {getUserInitials(user?.name || '')}
-                  </div>
-                )}
+                <div className="relative">
+                  {user?.profile_image ? (
+                    <img 
+                      src={user.profile_image} 
+                      alt={user.name}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 bg-[#043873] rounded-full flex items-center justify-center text-white font-semibold">
+                      {getUserInitials(user?.name || '')}
+                    </div>
+                  )}
+                  {/* Verification Badge */}
+                  {user?.user_type === 'vendor' && user.vendor?.is_verified && (
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                  )}
+                </div>
                 <div>
                   <div className="font-semibold text-[#043873]">{user?.name}</div>
                   <div className="text-sm text-[#043873]/70">{user?.email}</div>
-                </div>
+                  {user?.user_type === 'vendor' && user.vendor?.is_verified && (
+                    <div className="flex items-center gap-1 mt-1">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span className="text-xs text-green-600 font-medium">Verified</span>
+                    </div>
+                  )}
+                  </div>
               </div>
               <button
                 onClick={() => {

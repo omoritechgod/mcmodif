@@ -24,6 +24,7 @@ import GeneralVendorDashboard from './pages/dashboard/vendor';
 
 // Import profile pages
 import UserProfile from './pages/dashboard/user/profile';
+import VendorCompliance from './pages/dashboard/vendor/compliance';
 
 import './App.css';
 
@@ -63,6 +64,15 @@ function App() {
           <Route path="/dashboard/apartment/profile" element={<UserProfile />} />
           <Route path="/dashboard/food-vendor/profile" element={<UserProfile />} />
           <Route path="/dashboard/vendor/profile" element={<UserProfile />} />
+          
+          {/* Compliance Routes */}
+          <Route path="/dashboard/mechanic/compliance" element={<VendorCompliance />} />
+          <Route path="/dashboard/rider/compliance" element={<VendorCompliance />} />
+          <Route path="/dashboard/product-vendor/compliance" element={<VendorCompliance />} />
+          <Route path="/dashboard/service-vendor/compliance" element={<VendorCompliance />} />
+          <Route path="/dashboard/apartment/compliance" element={<VendorCompliance />} />
+          <Route path="/dashboard/food-vendor/compliance" element={<VendorCompliance />} />
+          <Route path="/dashboard/vendor/compliance" element={<VendorCompliance />} />
         </Routes>
       </div>
     </Router>

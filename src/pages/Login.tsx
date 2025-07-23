@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { authApi } from '../services/authApi';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -23,9 +24,7 @@ const Login: React.FC = () => {
     e.preventDefault();
 
     try {
-      const { userApi } = await import('../services/userApi');
-      
-      const data = await userApi.login({
+      const data = await authApi.loginUser({
         email: formData.email,
         password: formData.password,
       });

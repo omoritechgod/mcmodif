@@ -40,15 +40,13 @@ const Signup: React.FC = () => {
     setSuccessMessage('');
 
     try {
-      const { userApi } = await import('../services/userApi');
-      
-      const result = await userApi.register(formData);
+      const result = await authApi.registerUser(formData);
 
       if (formData.user_type === 'user') {
         setSuccessMessage('Registration successful! Please check your email for verification.');
         setTimeout(() => navigate('/login'), 3000);
       } else {
-        const loginData = await userApi.login({
+        const loginData = await authApi.loginUser({
           email: formData.email,
           password: formData.password,
         });

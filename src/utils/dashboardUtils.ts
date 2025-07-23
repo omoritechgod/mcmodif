@@ -5,12 +5,14 @@ export interface UserData {
   phone: string;
   user_type: 'user' | 'vendor';
   profile_image?: string;
+  email_verified_at?: string | null;
   vendor?: {
     id: number;
     category: string;
     business_name: string;
     vendor_type: string;
     verification_status: string;
+    is_verified?: boolean;
   };
 }
 

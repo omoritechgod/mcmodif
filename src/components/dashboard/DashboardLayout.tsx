@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Bell, 
-  Settings, 
   LogOut, 
   Menu, 
   X, 
@@ -16,9 +15,12 @@ import {
   User,
   Wallet,
   BarChart3,
-  MessageCircle
+  MessageCircle,
+  Shield,
+  Settings
 } from 'lucide-react';
 import { UserData, getDashboardPath, getPageTitle, getUserInitials } from '../../utils/dashboardUtils';
+import { authApi } from '../../services/authApi';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -46,8 +48,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     }
 
     try {
-      const { userApi } = await import('../../services/userApi');
-      const userData = await userApi.getProfile();
+      const userData = await authApi.fetchCurrentUser();
       
       setUser({
         ...userData.user,
@@ -86,7 +87,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       { icon: <BarChart3 size={20} />, label: 'Analytics', path: `${getDashboardPath(user!)}/analytics` },
       { icon: <MessageCircle size={20} />, label: 'Messages', path: `${getDashboardPath(user!)}/messages` },
       { icon: <User size={20} />, label: 'Profile', path: `${getDashboardPath(user!)}/profile` },
-      { icon: <Settings size={20} />, label: 'Settings', path: `${getDashboardPath(user!)}/settings` },
     ];
 
     if (user.user_type === 'user') {
@@ -96,7 +96,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { icon: <Package size={20} />, label: 'Orders', path: '/dashboard/user/orders' },
         { icon: <Car size={20} />, label: 'Rides', path: '/dashboard/user/rides' },
         ...baseItems.slice(1, 3),
-        ...baseItems.slice(3),
+        { icon: <Settings size={20} />, label: 'Settings', path: `${getDashboardPath(user!)}/settings` },
       ];
     }
 
@@ -151,7 +151,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       ...baseItems.slice(0, 1),
       ...vendorItems,
       ...baseItems.slice(1, 3),
-      ...baseItems.slice(3),
+      { icon: <Shield size={20} />, label: 'Compliance', path: `${getDashboardPath(user!)}/compliance` },
+      { icon: <Settings size={20} />, label: 'Settings', path: `${getDashboardPath(user!)}/settings` },
     ];
   };
 
@@ -220,19 +221,30 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         {/* User Info */}
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center">
-            {user?.profile_image ? (
-              <img 
-                src={user.profile_image} 
-                alt={user.name}
-                className="w-10 h-10 rounded-full object-cover"
-              />
-            ) : (
-              <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
-                {getUserInitials(user?.name || '')}
-              </div>
-            )}
+            <div className="relative">
+              {user?.profile_image ? (
+                <img 
+                  src={user.profile_image} 
+                  alt={user.name}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+                  {getUserInitials(user?.name || '')}
+                </div>
+              )}
+              {/* Verification Badge */}
+              {user.user_type === 'vendor' && user.vendor?.is_verified && (
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+              )}
+            </div>
             <div className="ml-3 flex-1">
-              <p className="text-sm font-medium text-gray-900">{user.name}</p>
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                {user.user_type === 'vendor' && user.vendor?.is_verified && (
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                )}
+              </div>
               <p className="text-xs text-gray-500">{user.email}</p>
               {user.user_type === 'vendor' && user.vendor && (
                 <div className="flex items-center gap-2 mt-1">
