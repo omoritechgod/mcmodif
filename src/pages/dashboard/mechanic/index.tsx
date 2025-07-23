@@ -79,12 +79,35 @@ const MechanicDashboard: React.FC = () => {
 
   useEffect(() => {
     // Simulate fetching mechanic stats
-    setStats({
-      totalEarnings: 185000,
-      completedJobs: 47,
-      activeRequests: 3,
-      rating: 4.8
-    });
+    // Initialize with zero values - will be updated when backend data is fetched
+    const fetchStats = async () => {
+      try {
+        // TODO: Replace with actual API call to your Laravel backend
+        // const response = await fetch('/api/mechanic/dashboard-summary', {
+        //   headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        // });
+        // const data = await response.json();
+        
+        // For now, set to zero until backend is connected
+        setStats({
+          totalEarnings: 0, // data.totalEarnings || 0
+          completedJobs: 0, // data.completedJobs || 0
+          activeRequests: 0, // data.activeRequests || 0
+          rating: 0 // data.rating || 0
+        });
+      } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+        // Set default zero values on error
+        setStats({
+          totalEarnings: 0,
+          completedJobs: 0,
+          activeRequests: 0,
+          rating: 0
+        });
+      }
+    };
+    
+    fetchStats();
   }, []);
 
   const getStatusColor = (status: string) => {
@@ -143,7 +166,9 @@ const MechanicDashboard: React.FC = () => {
               </div>
               <span className="text-sm font-medium text-green-600">+15%</span>
             </div>
-            <div className="text-2xl font-bold text-gray-900 mb-1">₦{stats.totalEarnings.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-gray-900 mb-1">
+              ₦{stats.totalEarnings > 0 ? stats.totalEarnings.toLocaleString() : '0'}
+            </div>
             <div className="text-sm text-gray-600">Total Earnings</div>
           </div>
 
@@ -154,7 +179,9 @@ const MechanicDashboard: React.FC = () => {
               </div>
               <span className="text-sm font-medium text-green-600">+8%</span>
             </div>
-            <div className="text-2xl font-bold text-gray-900 mb-1">{stats.completedJobs}</div>
+            <div className="text-2xl font-bold text-gray-900 mb-1">
+              {stats.completedJobs > 0 ? stats.completedJobs : '0'}
+            </div>
             <div className="text-sm text-gray-600">Completed Jobs</div>
           </div>
 
@@ -165,7 +192,9 @@ const MechanicDashboard: React.FC = () => {
               </div>
               <span className="text-sm font-medium text-blue-600">Active</span>
             </div>
-            <div className="text-2xl font-bold text-gray-900 mb-1">{stats.activeRequests}</div>
+            <div className="text-2xl font-bold text-gray-900 mb-1">
+              {stats.activeRequests > 0 ? stats.activeRequests : '0'}
+            </div>
             <div className="text-sm text-gray-600">Active Requests</div>
           </div>
 
@@ -176,7 +205,7 @@ const MechanicDashboard: React.FC = () => {
               </div>
               <span className="text-sm font-medium text-green-600">+0.2</span>
             </div>
-            <div className="text-2xl font-bold text-gray-900 mb-1">{stats.rating}</div>
+            <div className="text-2xl font-bold text-gray-900 mb-1">{stats.rating > 0 ? stats.rating.toFixed(1) : '0.0'}</div>
             <div className="text-sm text-gray-600">Average Rating</div>
           </div>
         </div>

@@ -329,7 +329,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       </div>
 
       {/* Main content */}
-      <div className="lg:pl-64">
+      <div className="lg:ml-64">
         {/* Top header */}
         <div className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-30">
           <div className="px-4 sm:px-6 lg:px-8">
@@ -367,7 +367,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         </div>
 
         {/* Page content */}
-        <main className="flex-1">
+        <main className="flex-1 min-h-screen">
           {children}
         </main>
       </div>
