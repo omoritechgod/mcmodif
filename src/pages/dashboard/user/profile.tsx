@@ -5,10 +5,10 @@ import {
   Mail, 
   Phone, 
   Camera, 
-  Save,
+  Upload,
   AlertCircle,
   CheckCircle,
-  Upload
+  Shield
 } from 'lucide-react';
 import { getStoredUser } from '../../../utils/dashboardUtils';
 import { authApi } from '../../../services/authApi';
@@ -19,8 +19,6 @@ const UserProfile: React.FC = () => {
   const [message, setMessage] = useState({ type: '', text: '' });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
   useEffect(() => {
     if (selectedFile) {
@@ -85,6 +83,15 @@ const UserProfile: React.FC = () => {
     }
   };
 
+  const getUserInitials = (name: string): string => {
+    if (!name) return 'U';
+    const names = name.split(' ');
+    if (names.length >= 2) {
+      return (names[0].charAt(0) + names[1].charAt(0)).toUpperCase();
+    }
+    return name.charAt(0).toUpperCase();
+  };
+
   if (!user) {
     return (
       <DashboardLayout>
@@ -133,7 +140,7 @@ const UserProfile: React.FC = () => {
                       />
                     ) : (
                       <div className="w-32 h-32 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-4xl border-4 border-gray-200">
-                        {user.name.charAt(0).toUpperCase()}
+                        {getUserInitials(user.name)}
                       </div>
                     )}
                     
@@ -230,8 +237,20 @@ const UserProfile: React.FC = () => {
                         readOnly
                         className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-600 cursor-not-allowed"
                       />
+                      {user.email_verified_at && (
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                          <CheckCircle className="text-green-500" size={16} />
+                        </div>
+                      )}
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Contact support to change your email</p>
+                    <div className="flex items-center justify-between mt-1">
+                      <p className="text-xs text-gray-500">Contact support to change your email</p>
+                      {user.email_verified_at ? (
+                        <span className="text-xs text-green-600 font-medium">✓ Verified</span>
+                      ) : (
+                        <span className="text-xs text-yellow-600 font-medium">⚠ Not Verified</span>
+                      )}
+                    </div>
                   </div>
 
                   <div>
@@ -265,22 +284,95 @@ const UserProfile: React.FC = () => {
                   </div>
 
                   {user.user_type === 'vendor' && user.vendor && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Verification Status
-                      </label>
-                      <div className="px-4 py-3 border border-gray-300 rounded-xl bg-gray-50">
-                        <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                          user.vendor.verification_status === 'verified' 
-                            ? 'bg-green-100 text-green-800'
-                            : user.vendor.verification_status === 'pending'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-red-100 text-red-800'
-                        }`}>
-                          {user.vendor.verification_status?.charAt(0).toUpperCase() + user.vendor.verification_status?.slice(1)}
-                        </span>
+                    <>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Business Type
+                        </label>
+                        <div className="px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-600">
+                          {user.vendor.vendor_type === 'individual' ? 'Individual' : 'Registered Business'}
+                        </div>
                       </div>
-                    </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Verification Status
+                        </label>
+                        <div className="space-y-3">
+                          {/* Overall Status */}
+                          <div className="px-4 py-3 border border-gray-300 rounded-xl bg-gray-50">
+                            <div className="flex items-center justify-between">
+                              <span>Account Status:</span>
+                              <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${
+                                user.vendor.is_verified 
+                                  ? 'bg-green-100 text-green-800'
+                                  : 'bg-yellow-100 text-yellow-800'
+                              }`}>
+                                {user.vendor.is_verified ? (
+                                  <>
+                                    <CheckCircle size={14} />
+                                    Live
+                                  </>
+                                ) : (
+                                  <>
+                                    <AlertCircle size={14} />
+                                    Test Mode
+                                  </>
+                                )}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Verification Steps */}
+                          <div className="bg-gray-50 p-4 rounded-xl">
+                            <h4 className="font-medium text-gray-900 mb-3">Verification Steps:</h4>
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm text-gray-700">Email Verification</span>
+                                {user.email_verified_at ? (
+                                  <CheckCircle className="text-green-500" size={16} />
+                                ) : (
+                                  <AlertCircle className="text-yellow-500" size={16} />
+                                )}
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm text-gray-700">
+                                  {user.vendor.vendor_type === 'individual' ? 'NIN Document' : 'CAC Document'}
+                                </span>
+                                {user.vendor.compliance_status === 'approved' ? (
+                                  <CheckCircle className="text-green-500" size={16} />
+                                ) : user.vendor.compliance_status === 'pending' ? (
+                                  <AlertCircle className="text-yellow-500" size={16} />
+                                ) : (
+                                  <AlertCircle className="text-red-500" size={16} />
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Compliance Link */}
+                          {!user.vendor.is_verified && (
+                            <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl">
+                              <div className="flex items-center gap-3">
+                                <Shield className="text-blue-600" size={20} />
+                                <div className="flex-1">
+                                  <h4 className="font-semibold text-blue-800">Complete Verification</h4>
+                                  <p className="text-blue-700 text-sm">
+                                    Complete your compliance verification to activate your account.
+                                  </p>
+                                </div>
+                                <button
+                                  onClick={() => window.location.href = `${window.location.pathname.replace('/profile', '/compliance')}`}
+                                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+                                >
+                                  Go to Compliance
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </>
                   )}
                 </div>
               </div>
