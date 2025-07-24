@@ -109,7 +109,6 @@ const Header: React.FC = () => {
                 >
                   <LogOut size={16} />
                   Logout
-                </div>
                 </button>
               </div>
             )}
@@ -194,7 +193,7 @@ const Header: React.FC = () => {
                       <span className="text-xs text-green-600 font-medium">Verified</span>
                     </div>
                   )}
-                  </div>
+                </div>
               </div>
               <button
                 onClick={() => {
