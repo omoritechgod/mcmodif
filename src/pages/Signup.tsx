@@ -5,6 +5,8 @@ import SignupForm from '../components/auth/SignupForm';
 import VendorDetailsForm from '../components/auth/VendorDetailsForm';
 import VendorCategorySpecificForm from '../components/auth/VendorCategorySpecificForm';
 import { logErrorToBackend } from '../utils/logError'; // 👈 Make sure this exists
+import { authApi } from '../services/authApi'; // ✅ Add this line
+
 
 type RegistrationStep = 'initial' | 'vendorDetails' | 'vendorCategorySpecific';
 

@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
-import { X, Mail, Shield, CheckCircle, AlertCircle } from 'lucide-react';
+import { X, Phone, Shield, CheckCircle, AlertCircle } from 'lucide-react';
 import { verificationApi } from '../../services/verificationApi';
 
 interface OTPVerificationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  userEmail: string;
+  userId: number;
+  userPhone: string;
 }
 
 const OTPVerificationModal: React.FC<OTPVerificationModalProps> = ({
   isOpen,
   onClose,
   onSuccess,
-  userEmail
+  userId,
+  userPhone,
 }) => {
   const [step, setStep] = useState<'send' | 'verify'>('send');
   const [otp, setOtp] = useState('');
@@ -25,8 +27,8 @@ const OTPVerificationModal: React.FC<OTPVerificationModalProps> = ({
     setMessage({ type: '', text: '' });
 
     try {
-      const response = await verificationApi.sendOTP();
-      setMessage({ type: 'success', text: response.message || 'OTP sent successfully!' });
+      const response = await verificationApi.sendOTP(userId);
+      setMessage({ type: 'success', text: response.message || 'Voice OTP sent successfully!' });
       setStep('verify');
     } catch (error: any) {
       setMessage({ type: 'error', text: error.message || 'Failed to send OTP' });
@@ -36,8 +38,8 @@ const OTPVerificationModal: React.FC<OTPVerificationModalProps> = ({
   };
 
   const handleConfirmOTP = async () => {
-    if (!otp || otp.length !== 6) {
-      setMessage({ type: 'error', text: 'Please enter a valid 6-digit OTP' });
+    if (!otp || otp.length !== 3) {
+      setMessage({ type: 'error', text: 'Please enter a valid 3-digit OTP' });
       return;
     }
 
@@ -45,9 +47,9 @@ const OTPVerificationModal: React.FC<OTPVerificationModalProps> = ({
     setMessage({ type: '', text: '' });
 
     try {
-      const response = await verificationApi.confirmOTP(otp);
-      setMessage({ type: 'success', text: response.message || 'Email verified successfully!' });
-      
+      const response = await verificationApi.confirmOTP(userId, otp);
+      setMessage({ type: 'success', text: response.message || 'Phone number verified successfully!' });
+
       setTimeout(() => {
         onSuccess();
         onClose();
@@ -74,7 +76,7 @@ const OTPVerificationModal: React.FC<OTPVerificationModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="fixed inset-0 bg-black bg-opacity-50" onClick={handleClose}></div>
-      
+
       <div className="relative bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
         <button
           onClick={handleClose}
@@ -85,26 +87,27 @@ const OTPVerificationModal: React.FC<OTPVerificationModalProps> = ({
 
         <div className="text-center mb-6">
           <div className="bg-blue-100 rounded-full p-4 w-16 h-16 mx-auto mb-4">
-            <Mail className="text-blue-600" size={32} />
+            <Phone className="text-blue-600" size={32} />
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            {step === 'send' ? 'Verify Your Email' : 'Enter OTP Code'}
+            {step === 'send' ? 'Verify Your Phone' : 'Enter OTP Code'}
           </h2>
           <p className="text-gray-600">
-            {step === 'send' 
-              ? `We'll send a verification code to ${userEmail}`
-              : `Enter the 6-digit code sent to ${userEmail}`
-            }
+            {step === 'send'
+              ? `We'll call ${userPhone} with your verification code`
+              : `Enter the 3-digit code sent to ${userPhone}`}
           </p>
         </div>
 
         {/* Message Display */}
         {message.text && (
-          <div className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${
-            message.type === 'success' 
-              ? 'bg-green-50 border border-green-200 text-green-800' 
-              : 'bg-red-50 border border-red-200 text-red-800'
-          }`}>
+          <div
+            className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${
+              message.type === 'success'
+                ? 'bg-green-50 border border-green-200 text-green-800'
+                : 'bg-red-50 border border-red-200 text-red-800'
+            }`}
+          >
             {message.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
             <span>{message.text}</span>
           </div>
@@ -116,9 +119,10 @@ const OTPVerificationModal: React.FC<OTPVerificationModalProps> = ({
               <div className="flex items-center gap-3">
                 <Shield className="text-blue-600" size={20} />
                 <div>
-                  <h4 className="font-semibold text-blue-800">Email Verification Required</h4>
+                  <h4 className="font-semibold text-blue-800">Phone Verification Required</h4>
                   <p className="text-blue-700 text-sm">
-                    Verify your email to activate your vendor account and start receiving orders.
+                    We’ll place a call to your phone number with your OTP. Please make sure your
+                    line is active.
                   </p>
                 </div>
               </div>
@@ -132,12 +136,12 @@ const OTPVerificationModal: React.FC<OTPVerificationModalProps> = ({
               {isLoading ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  Sending OTP...
+                  Sending...
                 </>
               ) : (
                 <>
-                  <Mail size={16} />
-                  Send Verification Code
+                  <Phone size={16} />
+                  Send Voice OTP
                 </>
               )}
             </button>
@@ -148,15 +152,15 @@ const OTPVerificationModal: React.FC<OTPVerificationModalProps> = ({
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Enter 6-digit OTP
+                Enter 3-digit OTP
               </label>
               <input
                 type="text"
                 value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 3))}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center text-2xl font-mono tracking-widest"
-                placeholder="000000"
-                maxLength={6}
+                placeholder="000"
+                maxLength={3}
               />
             </div>
 
@@ -169,7 +173,7 @@ const OTPVerificationModal: React.FC<OTPVerificationModalProps> = ({
               </button>
               <button
                 onClick={handleConfirmOTP}
-                disabled={isLoading || otp.length !== 6}
+                disabled={isLoading || otp.length !== 3}
                 className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
               >
                 {isLoading ? (
@@ -178,7 +182,7 @@ const OTPVerificationModal: React.FC<OTPVerificationModalProps> = ({
                     Verifying...
                   </>
                 ) : (
-                  'Verify Email'
+                  'Verify'
                 )}
               </button>
             </div>

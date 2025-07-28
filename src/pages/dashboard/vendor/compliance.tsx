@@ -16,8 +16,8 @@ import { verificationApi } from '../../../services/verificationApi';
 import OTPVerificationModal from '../../../components/modals/OTPVerificationModal';
 
 interface ComplianceStatus {
-  email_verified: boolean;
-  email_verified_at: string | null;
+  phone_verified: boolean;
+  phone_verified_at: string | null;
   document_uploaded: boolean;
   document_type: 'nin' | 'cac' | null;
   compliance_status: 'pending' | 'approved' | 'rejected';
@@ -125,7 +125,7 @@ const VendorCompliance: React.FC = () => {
 
   const handleOTPSuccess = () => {
     fetchComplianceStatus();
-    setMessage({ type: 'success', text: 'Email verified successfully!' });
+    setMessage({ type: 'success', text: 'Phone number verified successfully!' });
   };
 
   if (isLoading) {
@@ -212,7 +212,7 @@ const VendorCompliance: React.FC = () => {
                   <div>
                     <h4 className="font-semibold text-yellow-800 mb-1">Account Not Live</h4>
                     <p className="text-yellow-700 text-sm">
-                      Your account is in test mode. Complete email verification and document upload 
+                      Your account is in test mode. Complete Phone Verification and document upload 
                       to activate your account and start receiving orders.
                     </p>
                   </div>
@@ -221,21 +221,21 @@ const VendorCompliance: React.FC = () => {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Email Verification Status */}
+              {/* Phone Verification Status */}
               <div className="flex items-center gap-4 p-4 border border-gray-200 rounded-xl">
                 <div className={`p-3 rounded-full ${
-                  complianceStatus.email_verified ? 'bg-green-100' : 'bg-gray-100'
+                  complianceStatus.phone_verified ? 'bg-green-100' : 'bg-gray-100'
                 }`}>
                   <Mail className={`${
-                    complianceStatus.email_verified ? 'text-green-600' : 'text-gray-400'
+                    complianceStatus.phone_verified ? 'text-green-600' : 'text-gray-400'
                   }`} size={24} />
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900">Email Verification</h4>
+                  <h4 className="font-medium text-gray-900">Phone Verification</h4>
                   <p className={`text-sm ${
-                    complianceStatus.email_verified ? 'text-green-600' : 'text-gray-500'
+                    complianceStatus.phone_verified ? 'text-green-600' : 'text-gray-500'
                   }`}>
-                    {complianceStatus.email_verified ? 'Verified' : 'Not Verified'}
+                    {complianceStatus.phone_verified ? 'Verified' : 'Not Verified'}
                   </p>
                 </div>
               </div>
@@ -261,30 +261,30 @@ const VendorCompliance: React.FC = () => {
             </div>
           </div>
 
-          {/* Email Verification Section */}
+          {/* Phone Verification Section */}
           <div className="bg-white rounded-2xl shadow-sm p-6 mb-8">
             <div className="flex items-center gap-3 mb-6">
               <div className={`p-3 rounded-full ${
-                complianceStatus.email_verified ? 'bg-green-100' : 'bg-blue-100'
+                complianceStatus.phone_verified ? 'bg-green-100' : 'bg-blue-100'
               }`}>
                 <Mail className={`${
-                  complianceStatus.email_verified ? 'text-green-600' : 'text-blue-600'
+                  complianceStatus.phone_verified ? 'text-green-600' : 'text-blue-600'
                 }`} size={24} />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Email Verification</h3>
-                <p className="text-gray-600">Verify your email address to activate your account</p>
+                <h3 className="text-lg font-semibold text-gray-900">Phone Verification</h3>
+                <p className="text-gray-600">Verify your phone number address to activate your account</p>
               </div>
             </div>
 
-            {complianceStatus.email_verified ? (
+            {complianceStatus.phone_verified ? (
               <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
                 <div className="flex items-center gap-3">
                   <CheckCircle className="text-green-600" size={20} />
                   <div>
-                    <h4 className="font-semibold text-green-800">Email Verified</h4>
+                    <h4 className="font-semibold text-green-800">Phone Verified</h4>
                     <p className="text-green-700 text-sm">
-                      Your email was verified on {new Date(complianceStatus.email_verified_at!).toLocaleDateString()}
+                      Your Phone number was verified on {new Date(complianceStatus.phone_verified_at!).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
@@ -292,14 +292,14 @@ const VendorCompliance: React.FC = () => {
             ) : (
               <div>
                 <p className="text-gray-600 mb-4">
-                  Click the button below to send a verification code to your email address: <strong>{user.email}</strong>
+                  Click the button below to send a verification code to your Phone number: <strong>{user.email}</strong>
                 </p>
                 <button
                   onClick={() => setShowOTPModal(true)}
                   className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors flex items-center gap-2"
                 >
                   <Mail size={16} />
-                  Verify Email
+                  Verify Phone
                 </button>
               </div>
             )}
@@ -450,7 +450,7 @@ const VendorCompliance: React.FC = () => {
           </div>
 
           {/* Submit for Review */}
-          {complianceStatus.email_verified && complianceStatus.document_uploaded && complianceStatus.compliance_status === 'pending' && (
+          {complianceStatus.phone_verified && complianceStatus.document_uploaded && complianceStatus.compliance_status === 'pending' && (
             <div className="bg-white rounded-2xl shadow-sm p-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="bg-blue-100 p-3 rounded-full">
@@ -499,12 +499,12 @@ const VendorCompliance: React.FC = () => {
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                  complianceStatus.email_verified ? 'bg-green-600' : 'bg-gray-300'
+                  complianceStatus.phone_verified ? 'bg-green-600' : 'bg-gray-300'
                 }`}>
-                  {complianceStatus.email_verified && <CheckCircle className="text-white" size={16} />}
+                  {complianceStatus.phone_verified && <CheckCircle className="text-white" size={16} />}
                 </div>
-                <span className={`${complianceStatus.email_verified ? 'text-green-600' : 'text-gray-600'}`}>
-                  Email address verified
+                <span className={`${complianceStatus.phone_verified ? 'text-green-600' : 'text-gray-600'}`}>
+                  Phone number verified
                 </span>
               </div>
 
@@ -549,7 +549,7 @@ const VendorCompliance: React.FC = () => {
           isOpen={showOTPModal}
           onClose={() => setShowOTPModal(false)}
           onSuccess={handleOTPSuccess}
-          userEmail={user.email}
+          userId={user.id}
         />
       </div>
     </DashboardLayout>

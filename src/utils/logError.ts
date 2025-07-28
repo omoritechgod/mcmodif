@@ -6,7 +6,7 @@ export const logErrorToBackend = async (context: string, error: any) => {
       context,
       message: error?.message || 'Unknown error',
       stack: error?.stack || null,
-      url: window?.location?.href || null, 
+      url: window?.location?.href || null,
       extra: typeof error === 'object' ? error : { raw: error },
     });
   } catch (logErr) {
