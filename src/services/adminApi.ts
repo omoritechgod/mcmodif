@@ -1,9 +1,8 @@
+// src/services/adminApi.ts
 import { ApiResponse } from './api';
 
-// Admin API configuration
 const ADMIN_BASE_URL = import.meta.env.VITE_ADMIN_API_BASE_URL || 'http://localhost:8000';
 
-// Admin API client (separate from regular API)
 class AdminApiClient {
   private baseURL: string;
 
@@ -12,7 +11,7 @@ class AdminApiClient {
   }
 
   private getAuthHeaders(): Record<string, string> {
-    const adminToken = localStorage.getItem('admin_token');
+    const adminToken = localStorage.getItem('adminToken'); // ✅ ensure this matches where you store it
     return {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -22,7 +21,7 @@ class AdminApiClient {
 
   async request<T = any>(endpoint: string, config: RequestInit = {}): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
-    
+
     const requestConfig: RequestInit = {
       ...config,
       headers: {
@@ -33,12 +32,10 @@ class AdminApiClient {
 
     try {
       const response = await fetch(url, requestConfig);
-      
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: 'Network error' }));
         throw new Error(errorData.message || `HTTP ${response.status}`);
       }
-
       return await response.json();
     } catch (error) {
       console.error(`Admin API Error [${config.method || 'GET'} ${endpoint}]:`, error);
@@ -69,7 +66,23 @@ class AdminApiClient {
   }
 }
 
-// Admin API service
+// Types for dashboard and admin
+export interface DashboardStats {
+  total_users: number;
+  total_vendors: number;
+  pending_kyc: number;
+  approved_vendors: number;
+  rejected_vendors: number;
+  active_vendors: number;
+}
+
+export interface Admin {
+  id: number;
+  name: string;
+  email: string;
+  role?: string;
+}
+
 export class AdminApiService {
   private client: AdminApiClient;
 
@@ -77,52 +90,53 @@ export class AdminApiService {
     this.client = new AdminApiClient(ADMIN_BASE_URL);
   }
 
-  // Admin authentication
-  async login(credentials: { email: string; password: string }): Promise<{ token: string; admin: any }> {
-    return this.client.post('/admin/login', credentials);
+  // Auth
+  async login(credentials: { email: string; password: string }): Promise<{ token: string; admin: Admin }> {
+    return this.client.post('/api/admin/login', credentials);
   }
 
   async logout(): Promise<ApiResponse> {
-    return this.client.post('/admin/logout');
+    return this.client.post('/api/admin/logout');
   }
 
-  // Admin dashboard
-  async getDashboard(): Promise<any> {
-    return this.client.get('/admin/dashboard');
+  async me(): Promise<{ admin: Admin }> {
+    return this.client.get('/api/admin/me');
   }
 
-  // User management
+  // Dashboard stats
+  async getDashboardStats(): Promise<{ data: DashboardStats }> {
+    return this.client.get('/api/admin/dashboard'); // ✅ Corrected to match backend
+  }
+
+  // Other admin actions
   async getUsers(): Promise<any> {
-    return this.client.get('/admin/users');
+    return this.client.get('/api/admin/users');
   }
 
   async getVendors(): Promise<any> {
-    return this.client.get('/admin/vendors');
+    return this.client.get('/api/admin/vendors');
   }
 
-  // Vendor verification
   async verifyVendor(vendorId: number): Promise<ApiResponse> {
-    return this.client.post(`/admin/vendors/${vendorId}/verify`);
+    return this.client.post(`/api/admin/vendors/${vendorId}/verify`);
   }
 
   async rejectVendor(vendorId: number, reason: string): Promise<ApiResponse> {
-    return this.client.post(`/admin/vendors/${vendorId}/reject`, { reason });
+    return this.client.post(`/api/admin/vendors/${vendorId}/reject`, { reason });
   }
 
-  // Platform analytics
   async getAnalytics(): Promise<any> {
-    return this.client.get('/admin/analytics');
+    return this.client.get('/api/admin/analytics');
   }
 
-  // System settings
   async getSettings(): Promise<any> {
-    return this.client.get('/admin/settings');
+    return this.client.get('/api/admin/settings');
   }
 
   async updateSettings(settings: any): Promise<ApiResponse> {
-    return this.client.put('/admin/settings', settings);
+    return this.client.put('/api/admin/settings', settings);
   }
 }
 
-// Create and export service instance
+// Export single instance
 export const adminApi = new AdminApiService();

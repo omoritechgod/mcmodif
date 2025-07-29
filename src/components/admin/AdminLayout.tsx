@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { 
-  Shield, 
-  LogOut, 
-  Menu, 
-  X, 
+import {
+  Shield,
+  LogOut,
+  Menu,
+  X,
   Home,
   Users,
   UserCheck,
@@ -91,14 +91,18 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   }
 
   if (!admin) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
+        Failed to load admin info. Please try again.
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Mobile sidebar overlay */}
+      {/* Sidebar Overlay (Mobile) */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         >
@@ -132,12 +136,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             <div className="ml-3">
               <p className="text-sm font-medium text-gray-900">{admin.name}</p>
               <p className="text-xs text-gray-500">{admin.email}</p>
-              <p className="text-xs text-blue-600 font-medium">{admin.role}</p>
+              <p className="text-xs text-blue-600 font-medium">{admin.role || 'Admin'}</p>
             </div>
           </div>
         </div>
 
-        {/* Navigation */}
+        {/* Navigation Links */}
         <nav className="mt-6 px-3">
           <div className="space-y-1">
             {navigationItems.map((item, index) => (
@@ -160,7 +164,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           </div>
         </nav>
 
-        {/* Logout */}
+        {/* Logout Button */}
         <div className="absolute bottom-0 left-0 right-0 p-3">
           <button
             onClick={handleLogout}
@@ -172,9 +176,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         </div>
       </div>
 
-      {/* Main content */}
+      {/* Main Content */}
       <div className="lg:ml-64">
-        {/* Top header */}
+        {/* Top Header */}
         <div className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
@@ -195,7 +199,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                   <Bell size={20} />
                   <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
                 </button>
-                
+
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                     {admin.name.charAt(0).toUpperCase()}
@@ -206,7 +210,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           </div>
         </div>
 
-        {/* Page content */}
+        {/* Page Content */}
         <main className="flex-1">
           {children}
         </main>
