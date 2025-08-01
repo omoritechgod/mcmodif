@@ -1,7 +1,7 @@
 // src/services/adminApi.ts
 import { ApiResponse } from './api';
 
-const ADMIN_BASE_URL = import.meta.env.VITE_ADMIN_API_BASE_URL || 'http://localhost:8000';
+const ADMIN_BASE_URL = import.meta.env.VITE_ADMIN_API_BASE_URL || 'https://mdoilandgas.com/mcdee/backend/public';
 
 class AdminApiClient {
   private baseURL: string;
@@ -65,6 +65,23 @@ class AdminApiClient {
     return this.request<T>(endpoint, { method: 'DELETE' });
   }
 }
+  export interface LiveVendor {
+    id: number;
+    business_name: string;
+    vendor_type: string;
+    category: string;
+    is_verified: boolean;
+    verification_status: string;
+    created_at: string;
+    user: {
+      id: number;
+      name: string;
+      email: string;
+      phone: string;
+      email_verified_at: string | null;
+    };
+  }
+
 
 // Types for dashboard and admin
 export interface DashboardStats {
@@ -99,7 +116,7 @@ export class AdminApiService {
     return this.client.post('/api/admin/logout');
   }
 
-  async me(): Promise<{ admin: Admin }> {
+  async me(): Promise<Admin> {
     return this.client.get('/api/admin/me');
   }
 
@@ -136,6 +153,22 @@ export class AdminApiService {
   async updateSettings(settings: any): Promise<ApiResponse> {
     return this.client.put('/api/admin/settings', settings);
   }
+  async getLiveVendors(): Promise<{ data: LiveVendor[] }> {
+    return this.client.get('/api/admin/vendors');
+  }
+    async getKYCVerifications(): Promise<{ data: KYCVerification[] }> {
+    return this.client.get('/api/admin/kyc/verifications');
+  }
+
+  async approveKYC(id: number): Promise<void> {
+    return this.client.post(`/api/admin/kyc/verifications/${id}/approve`);
+  }
+
+  async rejectKYC(id: number, reason: string): Promise<void> {
+    return this.client.post(`/api/admin/kyc/verifications/${id}/reject`, { reason });
+  }
+
+
 }
 
 // Export single instance

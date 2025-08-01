@@ -37,7 +37,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
     try {
       const response = await adminApi.me();
-      setAdmin(response.admin);
+      setAdmin(response);
     } catch (error) {
       console.error('Error fetching admin data:', error);
       localStorage.removeItem('adminToken');
