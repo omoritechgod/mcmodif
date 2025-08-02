@@ -1,7 +1,7 @@
 // src/services/adminApi.ts
 import { ApiResponse } from './api';
 
-const ADMIN_BASE_URL = import.meta.env.VITE_ADMIN_API_BASE_URL || 'https://mdoilandgas.com/mcdee/backend/public';
+const ADMIN_BASE_URL = import.meta.env.VITE_ADMIN_API_BASE_URL || 'http://localhost:8000';
 
 class AdminApiClient {
   private baseURL: string;
