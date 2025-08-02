@@ -1,6 +1,6 @@
 // API Configuration
 export const API_CONFIG = {
-  BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api',
+  BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000',
   ADMIN_BASE_URL: import.meta.env.VITE_ADMIN_API_BASE_URL || 'http://127.0.0.1:8000',
   TIMEOUT: 30000, // 30 seconds
 };
@@ -14,7 +14,7 @@ export const ENDPOINTS = {
   ME: '/api/me',
   
   // Profile
-  UPDATE_PROFILE_IMAGE: '/api/user/profile/image',
+  UPDATE_PROFILE_IMAGE: '/api/profile-picture/upload',
   
   // Maintenance
   MAINTENANCE_REQUEST: '/api/maintenance/request',
