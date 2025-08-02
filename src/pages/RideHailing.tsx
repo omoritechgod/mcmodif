@@ -238,23 +238,27 @@ const RideHailing: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Status Information - Moved from header */}
-        <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-          <div className="flex items-center gap-2">
-            <MapPin size={16} className="text-gray-600" />
-            <span className="text-gray-600">Lagos, Nigeria</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(rideStatus)}`}>
-              {getRideStatusMessage()}
+      {/* Status Information Bar */}
+      <div className="bg-gray-50 border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div className="flex items-center gap-2">
+              <MapPin size={16} className="text-gray-600" />
+              <span className="text-gray-600">Lagos, Nigeria</span>
             </div>
-            <div className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-              <Shield className="w-3 h-3" />
-              Safe Rides
+            <div className="flex items-center gap-3">
+              <div className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(rideStatus)}`}>
+                {getRideStatusMessage()}
+              </div>
+              <div className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                <Shield className="w-3 h-3" />
+                Safe Rides
+              </div>
             </div>
           </div>
         </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Left Side - Booking Form or Status */}
@@ -753,8 +757,11 @@ const RideHailing: React.FC = () => {
                       </span>
                     </div>
                   )}
-                  <div className="text-xs text-gray-400 mt-2">
-                    * Live GPS tracking will be integrated with mapping service
+                  <div className="bg-blue-50 border border-blue-200 p-2 rounded mt-2">
+                    <div className="text-xs text-blue-800">
+                      <strong>Demo Mode:</strong> This shows simulated GPS coordinates. 
+                      Live GPS tracking requires integration with mapping services like Google Maps API or Mapbox.
+                    </div>
                   </div>
                 </div>
               )}
