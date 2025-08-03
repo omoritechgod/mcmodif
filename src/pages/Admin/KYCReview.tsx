@@ -31,29 +31,36 @@ const KYCReview: React.FC = () => {
   }, []);
 
   const fetchVerifications = async () => {
+    console.log('🔍 Fetching KYC verifications...');
     try {
       const response = await adminApi.getKYCVerifications();
+      console.log('✅ KYC verifications response:', response);
       setVerifications(response.data);
+      setError(''); // Clear any previous errors
     } catch (error: any) {
       console.error('Error fetching KYC verifications:', error);
-      setError('Failed to load KYC verifications');
+      setError(`Failed to load KYC verifications: ${error.message || 'Unknown error'}`);
       // Set empty array for demo
       setVerifications([]);
     } finally {
+      console.log('🏁 Finished fetching KYC verifications');
       setIsLoading(false);
     }
   };
 
   const handleApprove = async (id: number) => {
+    console.log(`🔍 Approving KYC verification ${id}...`);
     setIsProcessing(true);
+    setError(''); // Clear any previous errors
     try {
       await adminApi.approveKYC(id);
+      console.log(`✅ KYC verification ${id} approved successfully`);
       await fetchVerifications(); // Refresh the list
       setShowModal(false);
       setSelectedVerification(null);
     } catch (error: any) {
       console.error('Error approving KYC:', error);
-      setError('Failed to approve KYC verification');
+      setError(`Failed to approve KYC verification: ${error.message || 'Unknown error'}`);
     } finally {
       setIsProcessing(false);
     }
@@ -65,16 +72,19 @@ const KYCReview: React.FC = () => {
       return;
     }
 
+    console.log(`🔍 Rejecting KYC verification ${id} with reason: ${rejectionReason}`);
     setIsProcessing(true);
+    setError(''); // Clear any previous errors
     try {
       await adminApi.rejectKYC(id, rejectionReason);
+      console.log(`✅ KYC verification ${id} rejected successfully`);
       await fetchVerifications(); // Refresh the list
       setShowModal(false);
       setSelectedVerification(null);
       setRejectionReason('');
     } catch (error: any) {
       console.error('Error rejecting KYC:', error);
-      setError('Failed to reject KYC verification');
+      setError(`Failed to reject KYC verification: ${error.message || 'Unknown error'}`);
     } finally {
       setIsProcessing(false);
     }
