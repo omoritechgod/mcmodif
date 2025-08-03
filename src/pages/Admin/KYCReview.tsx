@@ -262,7 +262,7 @@ const KYCReview: React.FC = () => {
             
             <div className="relative bg-white rounded-2xl p-8 max-w-2xl w-full mx-4 shadow-2xl max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900">KYC Document Review</h3>
+                <h3 className="text-xl font-bold text-gray-900">Vendor Verification Review</h3>
                 <button
                   onClick={() => setShowModal(false)}
                   className="text-gray-400 hover:text-gray-600"
@@ -288,90 +288,153 @@ const KYCReview: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <Phone size={16} className="text-gray-400" />
                     <span className="text-gray-600">Phone:</span>
-                    <span className="font-medium">{selectedVerification.user.phone}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">{selectedVerification.user.phone}</span>
+                      {selectedVerification.user.phone_verified_at ? (
+                        <span className="text-green-600 text-xs">✓ Verified</span>
+                      ) : (
+                        <span className="text-red-600 text-xs">Not verified</span>
+                      )}
+                    </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Building size={16} className="text-gray-400" />
                     <span className="text-gray-600">Business:</span>
-                    <span className="font-medium">{selectedVerification.vendor.business_name}</span>
+                    <span className="font-medium">{selectedVerification.business_name}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Calendar size={16} className="text-gray-400" />
-                    <span className="text-gray-600">Submitted:</span>
-                    <span className="font-medium">{new Date(selectedVerification.submitted_at).toLocaleDateString()}</span>
+                    <span className="text-gray-600">Registered:</span>
+                    <span className="font-medium">{new Date(selectedVerification.created_at).toLocaleDateString()}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <FileText size={16} className="text-gray-400" />
-                    <span className="text-gray-600">Document:</span>
-                    <span className="font-medium">{selectedVerification.document_type ? selectedVerification.document_type.toUpperCase() : 'N/A'}</span>
+                    <User size={16} className="text-gray-400" />
+                    <span className="text-gray-600">Type:</span>
+                    <span className="font-medium">{selectedVerification.vendor_type}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle size={16} className="text-gray-400" />
+                    <span className="text-gray-600">Category:</span>
+                    <span className="font-medium">{selectedVerification.category}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock size={16} className="text-gray-400" />
+                    <span className="text-gray-600">Phone Verified:</span>
+                    <span className="font-medium">
+                      {selectedVerification.user.phone_verified_at ? (
+                        <span className="text-green-600">
+                          {new Date(selectedVerification.user.phone_verified_at).toLocaleDateString()}
+                        </span>
+                      ) : (
+                        <span className="text-red-600">Not verified</span>
+                      )}
+                    </span>
                   </div>
                 </div>
               </div>
 
-              {/* Document Preview */}
+              {/* Verification Status */}
               <div className="mb-6">
-                <h4 className="font-semibold text-gray-900 mb-3">Document Preview</h4>
-                <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm text-gray-600">Document URL:</span>
-                    <a
-                      href={selectedVerification.document_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors flex items-center gap-1"
-                    >
-                      <Download size={14} />
-                      View Document
-                    </a>
-                  </div>
-                  
-                  {/* Document preview iframe or image */}
-                  <div className="bg-white rounded border border-gray-200 h-64 flex items-center justify-center">
-                    {selectedVerification.document_url.toLowerCase().includes('.pdf') ? (
-                      <div className="text-center">
-                        <FileText size={48} className="text-gray-400 mx-auto mb-2" />
-                        <p className="text-gray-500">PDF Document</p>
-                        <p className="text-sm text-gray-400">Click "View Document" to open</p>
+                <h4 className="font-semibold text-gray-900 mb-3">Verification Status</h4>
+                <div className="space-y-4">
+                  {/* Phone Verification Status */}
+                  <div className={`p-4 rounded-lg border ${
+                    selectedVerification.user.phone_verified_at 
+                      ? 'bg-green-50 border-green-200' 
+                      : 'bg-red-50 border-red-200'
+                  }`}>
+                    <div className="flex items-center gap-3">
+                      <Phone className={`${
+                        selectedVerification.user.phone_verified_at ? 'text-green-600' : 'text-red-600'
+                      }`} size={20} />
+                      <div>
+                        <h5 className={`font-semibold ${
+                          selectedVerification.user.phone_verified_at ? 'text-green-800' : 'text-red-800'
+                        }`}>
+                          Phone Verification
+                        </h5>
+                        <p className={`text-sm ${
+                          selectedVerification.user.phone_verified_at ? 'text-green-700' : 'text-red-700'
+                        }`}>
+                          {selectedVerification.user.phone_verified_at 
+                            ? `Verified on ${new Date(selectedVerification.user.phone_verified_at).toLocaleDateString()}`
+                            : 'Phone number not verified'
+                          }
+                        </p>
                       </div>
-                    ) : (
-                      selectedVerification.document_url ? (
-                        <img 
-                          src={selectedVerification.document_url} 
-                          alt="KYC Document"
-                          className="max-w-full max-h-full object-contain"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
-                            (e.target as HTMLImageElement).nextElementSibling!.classList.remove('hidden');
-                          }}
-                        />
-                      ) : (
-                        <div className="text-center">
-                          <FileText size={48} className="text-gray-400 mx-auto mb-2" />
-                          <p className="text-gray-500">No document URL available</p>
-                        </div>
-                      )
-                    )}
-                    <div className="hidden text-center">
-                      <FileText size={48} className="text-gray-400 mx-auto mb-2" />
-                      <p className="text-gray-500">Unable to preview document</p>
-                      <p className="text-sm text-gray-400">Click "View Document" to open</p>
+                    </div>
+                  </div>
+
+                  {/* Account Verification Status */}
+                  <div className={`p-4 rounded-lg border ${
+                    selectedVerification.is_verified 
+                      ? 'bg-green-50 border-green-200' 
+                      : 'bg-yellow-50 border-yellow-200'
+                  }`}>
+                    <div className="flex items-center gap-3">
+                      <Shield className={`${
+                        selectedVerification.is_verified ? 'text-green-600' : 'text-yellow-600'
+                      }`} size={20} />
+                      <div>
+                        <h5 className={`font-semibold ${
+                          selectedVerification.is_verified ? 'text-green-800' : 'text-yellow-800'
+                        }`}>
+                          Account Verification
+                        </h5>
+                        <p className={`text-sm ${
+                          selectedVerification.is_verified ? 'text-green-700' : 'text-yellow-700'
+                        }`}>
+                          {selectedVerification.is_verified 
+                            ? 'Account is verified and live'
+                            : 'Account pending verification'
+                          }
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Setup Status */}
+                  <div className={`p-4 rounded-lg border ${
+                    selectedVerification.is_setup_complete 
+                      ? 'bg-blue-50 border-blue-200' 
+                      : 'bg-gray-50 border-gray-200'
+                  }`}>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className={`${
+                        selectedVerification.is_setup_complete ? 'text-blue-600' : 'text-gray-400'
+                      }`} size={20} />
+                      <div>
+                        <h5 className={`font-semibold ${
+                          selectedVerification.is_setup_complete ? 'text-blue-800' : 'text-gray-600'
+                        }`}>
+                          Profile Setup
+                        </h5>
+                        <p className={`text-sm ${
+                          selectedVerification.is_setup_complete ? 'text-blue-700' : 'text-gray-500'
+                        }`}>
+                          {selectedVerification.is_setup_complete 
+                            ? 'Profile setup is complete'
+                            : 'Profile setup incomplete'
+                          }
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Rejection Reason Input (only show for pending status) */}
-              {selectedVerification.status === 'pending' && (
+              {!selectedVerification.is_verified && (
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Rejection Reason (if rejecting)
+                    Action Reason (if needed)
                   </label>
                   <textarea
                     value={rejectionReason}
                     onChange={(e) => setRejectionReason(e.target.value)}
                     rows={3}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                    placeholder="Provide a reason if you plan to reject this document..."
+                    placeholder="Provide a reason for your action (optional)..."
                   />
                 </div>
               )}
@@ -385,19 +448,19 @@ const KYCReview: React.FC = () => {
                   Close
                 </button>
                 
-                {selectedVerification.status === 'pending' && (
+                {!selectedVerification.is_verified && (
                   <>
                     <button
                       onClick={() => handleReject(selectedVerification.id)}
                       disabled={isProcessing}
-                      className="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-gray-300 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+                      className="flex-1 bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-300 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
                     >
                       {isProcessing ? (
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                       ) : (
                         <>
-                          <XCircle size={16} />
-                          Reject
+                          <Clock size={16} />
+                          Mark Pending
                         </>
                       )}
                     </button>
@@ -412,7 +475,7 @@ const KYCReview: React.FC = () => {
                       ) : (
                         <>
                           <CheckCircle size={16} />
-                          Approve
+                          Verify Vendor
                         </>
                       )}
                     </button>

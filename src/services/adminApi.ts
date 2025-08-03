@@ -158,7 +158,7 @@ export class AdminApiService {
     return this.client.get(ENDPOINTS.ADMIN_VENDORS);
   }
 
-  async getKYCVerifications(): Promise<{ data: KYCVerification[] }> {
+  async getKYCVerifications(): Promise<{ data: VendorVerification[] }> {
     return this.client.get(ENDPOINTS.ADMIN_KYC_VERIFICATIONS);
   }
 
@@ -176,25 +176,24 @@ export class AdminApiService {
 }
 
 // Add KYCVerification interface that was missing
-export interface KYCVerification {
+export interface VendorVerification {
   id: number;
   user: {
     id: number;
     name: string;
     email: string;
     phone: string;
+    phone_verified_at: string | null;
+    profile_picture: string | null;
   };
-  vendor: {
-    id: number;
-    business_name: string;
-    category: string;
-  };
-  document_type: 'nin' | 'cac';
-  document_url: string;
-  status: 'pending' | 'approved' | 'rejected';
-  submitted_at: string;
-  reviewed_at?: string | null;
-  rejection_reason?: string | null;
+  vendor_type: string;
+  business_name: string;
+  category: string;
+  is_setup_complete: number;
+  is_verified: number;
+  is_live: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 // Export single instance
