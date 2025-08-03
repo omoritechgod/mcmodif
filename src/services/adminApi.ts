@@ -193,8 +193,8 @@ export interface KYCVerification {
   document_url: string;
   status: 'pending' | 'approved' | 'rejected';
   submitted_at: string;
-  reviewed_at?: string;
-  rejection_reason?: string;
+  reviewed_at?: string | null;
+  rejection_reason?: string | null;
 }
 
 // Export single instance

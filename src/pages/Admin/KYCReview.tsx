@@ -223,13 +223,13 @@ const KYCReview: React.FC = () => {
                       <td className="px-6 py-4">
                         <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-800 text-sm rounded-full">
                           {verification.document_type === 'nin' ? <User size={14} /> : <Building size={14} />}
-                          {verification.document_type.toUpperCase()}
+                          {verification.document_type ? verification.document_type.toUpperCase() : 'N/A'}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center gap-1 px-2 py-1 text-sm font-medium rounded-full ${getStatusColor(verification.status)}`}>
                           {getStatusIcon(verification.status)}
-                          {verification.status.charAt(0).toUpperCase() + verification.status.slice(1)}
+                          {verification.status ? verification.status.charAt(0).toUpperCase() + verification.status.slice(1) : 'Unknown'}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500">
@@ -303,7 +303,7 @@ const KYCReview: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <FileText size={16} className="text-gray-400" />
                     <span className="text-gray-600">Document:</span>
-                    <span className="font-medium">{selectedVerification.document_type.toUpperCase()}</span>
+                    <span className="font-medium">{selectedVerification.document_type ? selectedVerification.document_type.toUpperCase() : 'N/A'}</span>
                   </div>
                 </div>
               </div>
@@ -334,15 +334,22 @@ const KYCReview: React.FC = () => {
                         <p className="text-sm text-gray-400">Click "View Document" to open</p>
                       </div>
                     ) : (
-                      <img 
-                        src={selectedVerification.document_url} 
-                        alt="KYC Document"
-                        className="max-w-full max-h-full object-contain"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                          (e.target as HTMLImageElement).nextElementSibling!.classList.remove('hidden');
-                        }}
-                      />
+                      selectedVerification.document_url ? (
+                        <img 
+                          src={selectedVerification.document_url} 
+                          alt="KYC Document"
+                          className="max-w-full max-h-full object-contain"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                            (e.target as HTMLImageElement).nextElementSibling!.classList.remove('hidden');
+                          }}
+                        />
+                      ) : (
+                        <div className="text-center">
+                          <FileText size={48} className="text-gray-400 mx-auto mb-2" />
+                          <p className="text-gray-500">No document URL available</p>
+                        </div>
+                      )
                     )}
                     <div className="hidden text-center">
                       <FileText size={48} className="text-gray-400 mx-auto mb-2" />
