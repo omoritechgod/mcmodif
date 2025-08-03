@@ -14,11 +14,11 @@ import {
   Download,
   AlertTriangle
 } from 'lucide-react';
-import { adminApi, KYCVerification } from '../../services/adminApi';
+import { adminApi, VendorVerification } from '../../services/adminApi';
 
 const KYCReview: React.FC = () => {
-  const [verifications, setVerifications] = useState<KYCVerification[]>([]);
-  const [selectedVerification, setSelectedVerification] = useState<KYCVerification | null>(null);
+  const [verifications, setVerifications] = useState<VendorVerification[]>([]);
+  const [selectedVerification, setSelectedVerification] = useState<VendorVerification | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
@@ -116,7 +116,7 @@ const KYCReview: React.FC = () => {
     }
   };
 
-  const getVerificationStatusColor = (verification: KYCVerification) => {
+  const getVerificationStatusColor = (verification: VendorVerification) => {
     switch (verification.status) {
       case 'pending':
         return 'bg-yellow-100 text-yellow-800';
@@ -129,7 +129,7 @@ const KYCReview: React.FC = () => {
     }
   };
 
-  const getVerificationStatusIcon = (verification: KYCVerification) => {
+  const getVerificationStatusIcon = (verification: VendorVerification) => {
     switch (verification.status) {
       case 'pending':
         return <Clock size={16} />;
@@ -142,7 +142,7 @@ const KYCReview: React.FC = () => {
     }
   };
 
-  const getVerificationStatusText = (verification: KYCVerification) => {
+  const getVerificationStatusText = (verification: VendorVerification) => {
     return verification.status.charAt(0).toUpperCase() + verification.status.slice(1);
   };
 
@@ -320,12 +320,12 @@ const KYCReview: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <Building size={16} className="text-gray-400" />
                     <span className="text-gray-600">Business:</span>
-                    <span className="font-medium">{selectedVerification.vendor.business_name}</span>
+                    <span className="font-medium">{selectedVerification.business_name}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Calendar size={16} className="text-gray-400" />
                     <span className="text-gray-600">Submitted:</span>
-                    <span className="font-medium">{new Date(selectedVerification.submitted_at).toLocaleDateString()}</span>
+                    <span className="font-medium">{new Date(selectedVerification.created_at).toLocaleDateString()}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <FileText size={16} className="text-gray-400" />

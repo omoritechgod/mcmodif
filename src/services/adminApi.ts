@@ -99,6 +99,7 @@ export interface Admin {
   name: string;
   email: string;
   role?: string;
+  phone_verified_at: string | null;
 }
 
 export class AdminApiService {
