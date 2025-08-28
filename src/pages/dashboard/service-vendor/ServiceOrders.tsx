@@ -23,6 +23,8 @@ const ServiceOrders: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<
     "all" | "pending" | "active" | "completed"
   >("all")
+  const [respondingTo, setRespondingTo] = useState<number | null>(null)
+  const [vendorResponse, setVendorResponse] = useState("")
 
   useEffect(() => {
     fetchMyOrders()
@@ -58,6 +60,8 @@ const ServiceOrders: React.FC = () => {
   const handleAcceptOrder = async (orderId: number) => {
     try {
       await vendorServiceOrderApi.acceptOrder(orderId)
+      setRespondingTo(null)
+      setVendorResponse("")
       await fetchMyOrders()
       alert("Order accepted successfully!")
     } catch (error) {
@@ -71,6 +75,8 @@ const ServiceOrders: React.FC = () => {
     
     try {
       await vendorServiceOrderApi.declineOrder(orderId)
+      setRespondingTo(null)
+      setVendorResponse("")
       await fetchMyOrders()
       alert("Order declined successfully!")
     } catch (error) {
@@ -312,22 +318,75 @@ const ServiceOrders: React.FC = () => {
                   </div>
                 )}
 
+                {/* Vendor Response */}
+                {order.vendor_response && (
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <MessageSquare size={14} className="text-blue-400" />
+                      <span className="text-sm font-medium text-blue-700">
+                        Your Response:
+                      </span>
+                    </div>
+                    <p className="text-sm text-blue-600 bg-blue-50 rounded-lg p-3">
+                      {order.vendor_response}
+                    </p>
+                  </div>
+                )}
+
+                {/* Response Form for Pending Orders */}
+                {order.status === "pending_vendor_response" && respondingTo === order.id && (
+                  <div className="mb-4 p-4 bg-blue-50 rounded-lg">
+                    <label className="block text-sm font-medium text-blue-700 mb-2">
+                      Response to Customer (Optional):
+                    </label>
+                    <textarea
+                      value={vendorResponse}
+                      onChange={(e) => setVendorResponse(e.target.value)}
+                      rows={3}
+                      placeholder="Add any additional information or questions for the customer..."
+                      className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    />
+                  </div>
+                )}
+
                 {/* Action Buttons */}
                 <div className="flex gap-3 pt-4 border-t border-gray-100">
                   {order.status === "pending_vendor_response" && (
                     <>
-                      <button
-                        onClick={() => handleAcceptOrder(order.id)}
-                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
-                      >
-                        Accept Order
-                      </button>
-                      <button
-                        onClick={() => handleDeclineOrder(order.id)}
-                        className="px-4 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors text-sm"
-                      >
-                        Decline
-                      </button>
+                      {respondingTo === order.id ? (
+                        <>
+                          <button
+                            onClick={() => handleAcceptOrder(order.id)}
+                            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+                          >
+                            Accept Order
+                          </button>
+                          <button
+                            onClick={() => {
+                              setRespondingTo(null)
+                              setVendorResponse("")
+                            }}
+                            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => setRespondingTo(order.id)}
+                            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+                          >
+                            Accept Order
+                          </button>
+                          <button
+                            onClick={() => handleDeclineOrder(order.id)}
+                            className="px-4 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors text-sm"
+                          >
+                            Decline
+                          </button>
+                        </>
+                      )}
                     </>
                   )}
 
@@ -351,7 +410,7 @@ const ServiceOrders: React.FC = () => {
                     </button>
                   )}
 
-                  {order.user.phone && order.status !== "pending_vendor_response" && (
+                  {order.user?.phone && order.status !== "pending_vendor_response" && (
                     <a
                       href={`tel:${order.user.phone}`}
                       className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm flex items-center gap-2"
@@ -368,9 +427,11 @@ const ServiceOrders: React.FC = () => {
                     <div>
                       Received: {new Date(order.created_at).toLocaleString()}
                     </div>
-                    <div>
-                      <span>Deadline: {new Date(order.deadline).toLocaleDateString()}</span>
-                    </div>
+                    {order.deadline && (
+                      <div>
+                        Deadline: {new Date(order.deadline).toLocaleDateString()}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
