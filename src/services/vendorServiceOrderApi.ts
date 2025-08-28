@@ -81,28 +81,12 @@ export const vendorServiceOrderApi = {
    * Accept an order
    */
   acceptOrder: async (
-    orderId: number,
-    responseMessage?: string
+    orderId: number
   ): Promise<{ message: string }> => {
     const endpoint = ENDPOINTS.SERVICE_ORDER_RESPOND.replace('{id}', orderId.toString())
     return apiClient.post<{ message: string }>(
       endpoint,
-      { action: "accept", vendor_response: responseMessage },
-      true
-    )
-  },
-
-  /**
-   * Update an order status
-   */
-  updateOrder: async (
-    orderId: number,
-    updateData: { status: "in_progress" | "completed" | "cancelled" }
-  ): Promise<{ message: string }> => {
-    const endpoint = ENDPOINTS.SERVICE_ORDER_RESPOND.replace('{id}', orderId.toString())
-    return apiClient.post<{ message: string }>(
-      endpoint,
-      { action: updateData.status },
+      { action: "accept" },
       true
     )
   },
@@ -111,13 +95,12 @@ export const vendorServiceOrderApi = {
    * Decline an order
    */
   declineOrder: async (
-    orderId: number,
-    responseMessage?: string
+    orderId: number
   ): Promise<{ message: string }> => {
     const endpoint = ENDPOINTS.SERVICE_ORDER_RESPOND.replace('{id}', orderId.toString())
     return apiClient.post<{ message: string }>(
       endpoint,
-      { action: "decline", vendor_response: responseMessage },
+      { action: "decline" },
       true
     )
   },
