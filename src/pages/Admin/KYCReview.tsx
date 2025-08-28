@@ -14,11 +14,11 @@ import {
   Download,
   AlertTriangle
 } from 'lucide-react';
-import { adminApi, VendorVerification } from '../../services/adminApi';
+import { adminApi, KYCVerification } from '../../services/adminApi';
 
 const KYCReview: React.FC = () => {
-  const [verifications, setVerifications] = useState<VendorVerification[]>([]);
-  const [selectedVerification, setSelectedVerification] = useState<VendorVerification | null>(null);
+  const [verifications, setVerifications] = useState<KYCVerification[]>([]);
+  const [selectedVerification, setSelectedVerification] = useState<KYCVerification | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
@@ -114,36 +114,6 @@ const KYCReview: React.FC = () => {
       default:
         return <Clock size={16} />;
     }
-  };
-
-  const getVerificationStatusColor = (verification: VendorVerification) => {
-    switch (verification.status) {
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'approved':
-        return 'bg-green-100 text-green-800';
-      case 'rejected':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getVerificationStatusIcon = (verification: VendorVerification) => {
-    switch (verification.status) {
-      case 'pending':
-        return <Clock size={16} />;
-      case 'approved':
-        return <CheckCircle size={16} />;
-      case 'rejected':
-        return <XCircle size={16} />;
-      default:
-        return <Clock size={16} />;
-    }
-  };
-
-  const getVerificationStatusText = (verification: VendorVerification) => {
-    return verification.status.charAt(0).toUpperCase() + verification.status.slice(1);
   };
 
   const filteredVerifications = verifications.filter(verification => 
@@ -247,20 +217,23 @@ const KYCReview: React.FC = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="font-medium text-gray-900">{verification.business_name}</div>
-                        <div className="text-sm text-gray-500">{verification.category}</div>
+                        <div className="font-medium text-gray-900">{verification.vendor.business_name}</div>
+                        <div className="text-sm text-gray-500">{verification.vendor.category}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="font-medium text-gray-900">{verification.document_type}</div>
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-800 text-sm rounded-full">
+                          {verification.document_type === 'nin' ? <User size={14} /> : <Building size={14} />}
+                          {verification.document_type ? verification.document_type.toUpperCase() : 'N/A'}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-1 px-2 py-1 text-sm font-medium rounded-full ${getVerificationStatusColor(verification)}`}>
-                          {getVerificationStatusIcon(verification)}
-                          {getVerificationStatusText(verification)}
+                        <span className={`inline-flex items-center gap-1 px-2 py-1 text-sm font-medium rounded-full ${getStatusColor(verification.status)}`}>
+                          {getStatusIcon(verification.status)}
+                          {verification.status ? verification.status.charAt(0).toUpperCase() + verification.status.slice(1) : 'Unknown'}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500">
-                        {new Date(verification.created_at).toLocaleDateString()}
+                        {new Date(verification.submitted_at).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4">
                         <button
@@ -320,12 +293,12 @@ const KYCReview: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <Building size={16} className="text-gray-400" />
                     <span className="text-gray-600">Business:</span>
-                    <span className="font-medium">{selectedVerification.business_name}</span>
+                    <span className="font-medium">{selectedVerification.vendor.business_name}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Calendar size={16} className="text-gray-400" />
                     <span className="text-gray-600">Submitted:</span>
-                    <span className="font-medium">{new Date(selectedVerification.created_at).toLocaleDateString()}</span>
+                    <span className="font-medium">{new Date(selectedVerification.submitted_at).toLocaleDateString()}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <FileText size={16} className="text-gray-400" />

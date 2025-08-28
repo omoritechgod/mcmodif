@@ -2,7 +2,7 @@
 import { ApiResponse } from './api';
 import { ENDPOINTS } from './config';
 
-const ADMIN_BASE_URL = import.meta.env.VITE_ADMIN_API_BASE_URL || 'http://localhost:8000';
+const ADMIN_BASE_URL = import.meta.env.VITE_ADMIN_API_BASE_URL || 'http://127.0.0.1:8000';
 
 class AdminApiClient {
   private baseURL: string;
@@ -99,7 +99,6 @@ export interface Admin {
   name: string;
   email: string;
   role?: string;
-  phone_verified_at: string | null;
 }
 
 export class AdminApiService {
@@ -159,7 +158,7 @@ export class AdminApiService {
     return this.client.get(ENDPOINTS.ADMIN_VENDORS);
   }
 
-  async getKYCVerifications(): Promise<{ data: VendorVerification[] }> {
+  async getKYCVerifications(): Promise<{ data: KYCVerification[] }> {
     return this.client.get(ENDPOINTS.ADMIN_KYC_VERIFICATIONS);
   }
 
@@ -177,24 +176,25 @@ export class AdminApiService {
 }
 
 // Add KYCVerification interface that was missing
-export interface VendorVerification {
+export interface KYCVerification {
   id: number;
   user: {
     id: number;
     name: string;
     email: string;
     phone: string;
-    phone_verified_at: string | null;
-    profile_picture: string | null;
   };
-  vendor_type: string;
-  business_name: string;
-  category: string;
-  is_setup_complete: number;
-  is_verified: number;
-  is_live: boolean;
-  created_at: string;
-  updated_at: string;
+  vendor: {
+    id: number;
+    business_name: string;
+    category: string;
+  };
+  document_type: 'nin' | 'cac';
+  document_url: string;
+  status: 'pending' | 'approved' | 'rejected';
+  submitted_at: string;
+  reviewed_at?: string | null;
+  rejection_reason?: string | null;
 }
 
 // Export single instance
