@@ -58,8 +58,6 @@ const ServiceOrders: React.FC = () => {
   const handleAcceptOrder = async (orderId: number) => {
     try {
       await vendorServiceOrderApi.acceptOrder(orderId)
-      setRespondingTo(null)
-      setVendorResponse("")
       await fetchMyOrders()
       alert("Order accepted successfully!")
     } catch (error) {
@@ -73,8 +71,6 @@ const ServiceOrders: React.FC = () => {
     
     try {
       await vendorServiceOrderApi.declineOrder(orderId)
-      setRespondingTo(null)
-      setVendorResponse("")
       await fetchMyOrders()
       alert("Order declined successfully!")
     } catch (error) {
@@ -362,7 +358,7 @@ const ServiceOrders: React.FC = () => {
                     >
                       <Phone size={14} />
                       Call Customer
-                      <span>Phone: {order.user.phone}</span>
+                    </a>
                   )}
                 </div>
 
@@ -380,7 +376,7 @@ const ServiceOrders: React.FC = () => {
               </div>
             ))
           )}
-                    ₦{Number(order.amount).toLocaleString()}
+        </div>
       </div>
     </DashboardLayout>
   )
