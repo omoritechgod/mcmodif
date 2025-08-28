@@ -1,6 +1,6 @@
 "use client"
 
-import type React from "react"
+import React from "react"
 import { useState, useEffect } from "react"
 import {
   Calendar,
@@ -14,10 +14,7 @@ import {
 } from "lucide-react"
 
 import DashboardLayout from "../../../components/dashboard/DashboardLayout"
-import {
-  vendorServiceOrderApi,
-  type ServiceOrder,
-} from "../../../services/vendorServiceOrderApi"
+import { vendorServiceOrderApi, type ServiceOrder } from "../../../services/vendorServiceOrderApi"
 
 const ServiceOrders: React.FC = () => {
   const [orders, setOrders] = useState<ServiceOrder[]>([])
@@ -26,6 +23,8 @@ const ServiceOrders: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<
     "all" | "pending" | "active" | "completed"
   >("all")
+  const [respondingTo, setRespondingTo] = useState<number | null>(null)
+  const [vendorResponse, setVendorResponse] = useState("")
 
   useEffect(() => {
     fetchMyOrders()

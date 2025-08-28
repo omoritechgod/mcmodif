@@ -17,6 +17,10 @@ export interface ServiceOrder {
   paid_at: string | null
   completed_at: string | null
   updated_at: string
+  vendor_response?: string | null
+  requirements?: string
+  payment_status?: string
+  total_amount?: number
 
   service_vendor: {
     id: number
@@ -222,7 +226,7 @@ export const serviceOrderApi = {
     )
   },
   /**
-   * Confirm payment (manual trigger if webhook didn’t update)
+   * Confirm payment (manual trigger if webhook didn't update)
    */
   confirmPayment: async (
     orderId: number,

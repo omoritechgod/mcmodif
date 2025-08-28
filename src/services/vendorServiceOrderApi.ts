@@ -18,6 +18,10 @@ export interface ServiceOrder {
   completed_at: string | null
   created_at: string
   updated_at: string
+  vendor_response?: string | null;
+  requirements?: string;
+  payment_status?: string;
+  total_amount?: number;
 
   // Relations
   user: {

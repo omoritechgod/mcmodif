@@ -252,19 +252,23 @@ const MyServiceOrders: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <Phone size={14} />
                         <span>
-                          {order.status === "paid" || order.status === "completed" 
+                    <span>{order.service_vendor?.vendor?.business_name || order.service_vendor?.service_name || "Service Vendor"}</span>
                             ? order.service_vendor.vendor.user.phone 
                             : "Phone hidden until payment"}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Calendar size={14} />
+                      {order.status === "paid" || order.status === "completed"
+                        ? order.service_vendor?.vendor?.user?.phone || order.service_vendor?.phone
                         <span>Placed: {new Date(order.created_at).toLocaleDateString()}</span>
                       </div>
                     </div>
                   </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold text-green-600 mb-1">₦{parseFloat(order.amount).toLocaleString()}</div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar size={14} />
+                    <span>Deadline: {new Date(order.deadline).toLocaleDateString()}</span>
                   </div>
                 </div>
 
@@ -312,13 +316,15 @@ const MyServiceOrders: React.FC = () => {
                       <CheckCircle size={16} />
                       Mark as Completed
                     </button>
-                    <a
-                      href={\`tel:${order.service_vendor.vendor.user.phone}`}
-                      className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm flex items-center gap-2"
-                    >
-                      <Phone size={16} />
-                      Call Vendor
-                    </a>
+                    {(order.service_vendor?.vendor?.user?.phone || order.service_vendor?.phone) && (
+                      <a
+                        href={`tel:${order.service_vendor?.vendor?.user?.phone || order.service_vendor?.phone}`}
+                        className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm flex items-center gap-2"
+                      >
+                        <Phone size={16} />
+                        Call Vendor
+                      </a>
+                    )}
                   </div>
                 )}
 
@@ -330,6 +336,7 @@ const MyServiceOrders: React.FC = () => {
               </div>
             ))
           )}
+                <div className="text-xs text-gray-500">Order #{order.id}</div>
         </div>
       </div>
     </DashboardLayout>
