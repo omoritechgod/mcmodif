@@ -61,3 +61,5 @@ const PaymentSuccess: React.FC = () => {
     </div>
   );
 };
+
+export default PaymentSuccess
