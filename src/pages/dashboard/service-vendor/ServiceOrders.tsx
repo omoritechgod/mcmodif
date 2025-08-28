@@ -36,7 +36,17 @@ const ServiceOrders: React.FC = () => {
       setError(null)
       const response = await vendorServiceOrderApi.getMyOrders()
 
-      const ordersData = Array.isArray(response.data) ? response.data : []
+      // Handle both direct array and nested data structure
+      let ordersData: ServiceOrder[] = []
+      if (Array.isArray(response)) {
+        ordersData = response
+      } else if (response?.data && Array.isArray(response.data)) {
+        ordersData = response.data
+      } else if (Array.isArray(response.data)) {
+        ordersData = response.data
+      }
+      
+      console.log('Fetched orders:', ordersData)
       setOrders(ordersData)
     } catch (err) {
       setError("Failed to fetch your service orders")
@@ -402,12 +412,12 @@ const ServiceOrders: React.FC = () => {
 
                   {order.user?.phone && order.status !== "pending_vendor_response" && (
                     <a
-                      href={`tel:${order.user.phone}`}
+                      <span>Customer: {order.user.name}</span>
                       className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm flex items-center gap-2"
                     >
                       <Phone size={14} />
                       Call Customer
-                    </a>
+                      <span>Phone: {order.user.phone}</span>
                   )}
                 </div>
 
@@ -418,14 +428,14 @@ const ServiceOrders: React.FC = () => {
                       Received: {new Date(order.created_at).toLocaleString()}
                     </div>
                     <div>
-                      Last Updated: {new Date(order.updated_at).toLocaleString()}
+                      <span>Deadline: {new Date(order.deadline).toLocaleDateString()}</span>
                     </div>
                   </div>
                 </div>
               </div>
             ))
           )}
-        </div>
+                    ₦{Number(order.amount).toLocaleString()}
       </div>
     </DashboardLayout>
   )
