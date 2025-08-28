@@ -12,6 +12,7 @@ import {
   XCircle,
   AlertCircle,
   ClipboardList,
+  CreditCard,
 } from "lucide-react"
 
 import DashboardLayout from "../../../components/dashboard/DashboardLayout"
@@ -211,7 +212,7 @@ const MyServiceOrders: React.FC = () => {
           {filteredOrders.length === 0 ? (
             <div className="text-center py-12">
               <div className="text-6xl mb-4">📋</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
                 {selectedTab === "all" ? "No service orders yet" : `No ${selectedTab} orders`}
               </h3>
               <p className="text-gray-600">
@@ -227,15 +228,19 @@ const MyServiceOrders: React.FC = () => {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-lg font-semibold text-gray-900">
-                        {order.service_pricing?.title || "Service Order"}
+                        {order.service_pricing?.title || order.service_vendor.service_name}
                       </h3>
                       <div
-                        className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                        className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${getStatusColor(
                           order.status
                         )}`}
                       >
                         {getStatusIcon(order.status)}
-                        <span className="capitalize">{order.status.replace("_", " ")}</span>
+                        <span className="capitalize">
+                          {order.status === "pending_vendor_response" ? "Pending Response" :
+                           order.status === "awaiting_payment" ? "Awaiting Payment" :
+                           order.status.replace("_", " ")}
+                        </span>
                       </div>
                     </div>
 
@@ -246,43 +251,36 @@ const MyServiceOrders: React.FC = () => {
                       </div>
                       <div className="flex items-center gap-2">
                         <Phone size={14} />
-                        <span>{order.service_vendor?.vendor?.user?.phone || "Phone not available"}</span>
+                        <span>
+                          {order.status === "paid" || order.status === "completed" 
+                            ? order.service_vendor.vendor.user.phone 
+                            : "Phone hidden until payment"}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Calendar size={14} />
-                        <span>Deadline: {new Date(order.deadline).toLocaleDateString()}</span>
+                        <span>Placed: {new Date(order.created_at).toLocaleDateString()}</span>
                       </div>
                     </div>
                   </div>
-
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-green-600 mb-1">₦{order.total_amount.toLocaleString()}</div>
-                    <div className="text-xs text-gray-500">Order #{order.id}</div>
+                    <div className="text-2xl font-bold text-green-600 mb-1">₦{parseFloat(order.amount).toLocaleString()}</div>
                   </div>
                 </div>
 
-                {/* Requirements */}
-                <div className="mb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <MessageSquare size={14} className="text-gray-400" />
-                    <span className="text-sm font-medium text-gray-700">Your Requirements:</span>
-                  </div>
-                  <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3">{order.requirements}</p>
-                </div>
-
-                {/* Vendor Response */}
-                {order.vendor_response && (
+                {/* Notes */}
+                {order.notes && (
                   <div className="mb-4">
                     <div className="flex items-center gap-2 mb-2">
-                      <MessageSquare size={14} className="text-blue-400" />
-                      <span className="text-sm font-medium text-blue-700">Vendor Response:</span>
+                      <MessageSquare size={14} className="text-gray-400" />
+                      <span className="text-sm font-medium text-gray-700">Your Requirements:</span>
                     </div>
-                    <p className="text-sm text-blue-600 bg-blue-50 rounded-lg p-3">{order.vendor_response}</p>
+                    <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3">{order.notes}</p>
                   </div>
                 )}
 
                 {/* Action Buttons */}
-                {order.status === "pending" && (
+                {order.status === "pending_vendor_response" && (
                   <div className="flex gap-3 pt-4 border-t border-gray-100">
                     <button
                       onClick={() => handleCancelOrder(order.id)}
@@ -290,6 +288,37 @@ const MyServiceOrders: React.FC = () => {
                     >
                       Cancel Order
                     </button>
+                  </div>
+                )}
+
+                {order.status === "awaiting_payment" && (
+                  <div className="flex gap-3 pt-4 border-t border-gray-100">
+                    <button
+                      onClick={() => handleInitiatePayment(order.id)}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm flex items-center gap-2"
+                    >
+                      <CreditCard size={16} />
+                      Pay Now - ₦{parseFloat(order.amount).toLocaleString()}
+                    </button>
+                  </div>
+                )}
+
+                {order.status === "paid" && (
+                  <div className="flex gap-3 pt-4 border-t border-gray-100">
+                    <button
+                      onClick={() => handleMarkCompleted(order.id)}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm flex items-center gap-2"
+                    >
+                      <CheckCircle size={16} />
+                      Mark as Completed
+                    </button>
+                    <a
+                      href={\`tel:${order.service_vendor.vendor.user.phone}`}
+                      className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm flex items-center gap-2"
+                    >
+                      <Phone size={16} />
+                      Call Vendor
+                    </a>
                   </div>
                 )}
 
@@ -306,8 +335,5 @@ const MyServiceOrders: React.FC = () => {
     </DashboardLayout>
   )
 }
-
-export default MyServiceOrders
-
 
 export default MyServiceOrders
