@@ -1,5 +1,6 @@
 // src/services/serviceOrderApi.ts
 import { apiClient } from "./apiClient"
+import { ENDPOINTS } from "./config"
 
 // -------------------
 // Types
@@ -60,7 +61,7 @@ export const serviceOrderApi = {
     orderData: CreateServiceOrderData
   ): Promise<{ data: ServiceOrder }> => {
     const response = await apiClient.post<{ data: ServiceOrder }>(
-      "/api/service-orders",
+      ENDPOINTS.SERVICE_ORDERS,
       orderData,
       true
     )
@@ -82,7 +83,7 @@ export const serviceOrderApi = {
   getUserOrders: async (): Promise<ServiceOrderResponse> => {
     try {
       const response = await apiClient.get<ServiceOrderResponse>(
-        "/api/service-orders/my",
+        ENDPOINTS.SERVICE_ORDERS_MY,
         true
       )
 
@@ -110,7 +111,7 @@ export const serviceOrderApi = {
     orderId: number
   ): Promise<{ data: ServiceOrder }> => {
     const response = await apiClient.get<{ data: ServiceOrder }>(
-      `/api/service-orders/${orderId}`,
+      `${ENDPOINTS.SERVICE_ORDERS}/${orderId}`,
       true
     )
 
@@ -131,12 +132,61 @@ export const serviceOrderApi = {
     orderId: number
   ): Promise<{ message: string }> => {
     return apiClient.patch<{ message: string }>(
-      `/api/service-orders/${orderId}/cancel`,
+      `${ENDPOINTS.SERVICE_ORDERS}/${orderId}/cancel`,
       {},
       true
     )
   },
 
+  /**
+   * Initiate payment for service order
+   */
+  initiatePayment: async (
+    orderId: number
+  ): Promise<{ status: string; data: { link: string } }> => {
+    const endpoint = ENDPOINTS.SERVICE_ORDER_PAY.replace('{id}', orderId.toString())
+    return apiClient.post<{ status: string; data: { link: string } }>(
+      endpoint,
+      {},
+      true
+    )
+  },
+
+  /**
+   * Mark service order as completed (user)
+   */
+  markCompleted: async (
+    orderId: number
+  ): Promise<{ message: string }> => {
+    const endpoint = ENDPOINTS.SERVICE_ORDER_MARK_COMPLETED.replace('{id}', orderId.toString())
+    return apiClient.post<{ message: string }>(
+      endpoint,
+      {},
+      true
+    )
+  },
+
+  /**
+   * Manual payment confirmation (fallback after Flutterwave redirect)
+   */
+  manualPaymentTrigger: async (
+    paymentData: {
+      data: {
+        status: string
+        tx_ref: string
+        meta: {
+          type: string
+          service_order_id: number
+        }
+      }
+    }
+  ): Promise<{ status: string }> => {
+    return apiClient.post<{ status: string }>(
+      ENDPOINTS.FLUTTERWAVE_MANUAL_TRIGGER,
+      paymentData,
+      true
+    )
+  },
   /**
    * Confirm payment (manual trigger if webhook didn’t update)
    */

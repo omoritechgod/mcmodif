@@ -54,6 +54,33 @@ const MyServiceOrders: React.FC = () => {
     }
   }
 
+  const handleInitiatePayment = async (orderId: number) => {
+    try {
+      const response = await serviceOrderApi.initiatePayment(orderId)
+      
+      if (response.data.link) {
+        // Redirect to Flutterwave payment page
+        window.location.href = response.data.link
+      }
+    } catch (error) {
+      console.error("Error initiating payment:", error)
+      alert("Failed to initiate payment. Please try again.")
+    }
+  }
+
+  const handleMarkCompleted = async (orderId: number) => {
+    if (!confirm("Are you sure the service has been completed to your satisfaction?")) return
+    
+    try {
+      await serviceOrderApi.markCompleted(orderId)
+      await fetchOrders()
+      alert("Service marked as completed! Payment has been released to the vendor.")
+    } catch (error) {
+      console.error("Error marking order as completed:", error)
+      alert("Failed to mark order as completed. Please try again.")
+    }
+  }
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "pending":

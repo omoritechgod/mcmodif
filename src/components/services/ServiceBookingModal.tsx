@@ -194,7 +194,7 @@ const ServiceBookingModal: React.FC<ServiceBookingModalProps> = ({
               onChange={(e) => setRequirements(e.target.value)}
               rows={4}
               required
-              placeholder="Please describe your specific requirements, location details, and any special instructions..."
+              placeholder="Please describe your specific requirements, location details, and any special instructions... (This will be sent as 'notes' to the vendor)"
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
             />
             <p className="text-xs text-gray-500 mt-1">

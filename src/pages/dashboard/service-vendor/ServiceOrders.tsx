@@ -85,6 +85,19 @@ const ServiceOrders: React.FC = () => {
     }
   }
 
+  const handleDeclineOrder = async (orderId: number) => {
+    if (!confirm("Are you sure you want to decline this order?")) return
+    
+    try {
+      await vendorServiceOrderApi.declineOrder(orderId, "Unable to take this order at the moment")
+      await fetchMyOrders()
+      alert("Order declined successfully!")
+    } catch (error) {
+      console.error("Error declining order:", error)
+      alert("Failed to decline order. Please try again.")
+    }
+  }
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "pending":

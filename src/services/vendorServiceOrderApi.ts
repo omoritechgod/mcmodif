@@ -1,5 +1,6 @@
 // src/services/vendorServiceOrderApi.ts
 import { apiClient } from "./apiClient"
+import { ENDPOINTS } from "./config"
 
 // -------------------
 // Types
@@ -49,7 +50,7 @@ export const vendorServiceOrderApi = {
   getMyOrders: async (): Promise<ServiceOrderResponse> => {
     try {
       const response = await apiClient.get<ServiceOrderResponse>(
-        "/api/vendor/service-orders",
+        ENDPOINTS.VENDOR_SERVICE_ORDERS,
         true
       )
 
@@ -78,9 +79,10 @@ export const vendorServiceOrderApi = {
     orderId: number,
     responseMessage?: string
   ): Promise<{ message: string }> => {
+    const endpoint = ENDPOINTS.SERVICE_ORDER_RESPOND.replace('{id}', orderId.toString())
     return apiClient.post<{ message: string }>(
-      `/api/vendor/service-orders/${orderId}/accept`,
-      { vendor_response: responseMessage },
+      endpoint,
+      { action: "accept", vendor_response: responseMessage },
       true
     )
   },
@@ -92,9 +94,25 @@ export const vendorServiceOrderApi = {
     orderId: number,
     updateData: { status: "in_progress" | "completed" | "cancelled" }
   ): Promise<{ message: string }> => {
-    return apiClient.patch<{ message: string }>(
-      `/api/vendor/service-orders/${orderId}`,
-      updateData,
+    const endpoint = ENDPOINTS.SERVICE_ORDER_RESPOND.replace('{id}', orderId.toString())
+    return apiClient.post<{ message: string }>(
+      endpoint,
+      { action: updateData.status },
+      true
+    )
+  },
+
+  /**
+   * Decline an order
+   */
+  declineOrder: async (
+    orderId: number,
+    responseMessage?: string
+  ): Promise<{ message: string }> => {
+    const endpoint = ENDPOINTS.SERVICE_ORDER_RESPOND.replace('{id}', orderId.toString())
+    return apiClient.post<{ message: string }>(
+      endpoint,
+      { action: "decline", vendor_response: responseMessage },
       true
     )
   },
