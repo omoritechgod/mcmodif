@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 import { Link, useSearchParams } from "react-router-dom";
 import { CheckCircle } from "lucide-react";
 import { serviceOrderApi } from "../services/serviceOrderApi";
@@ -13,8 +13,20 @@ const PaymentSuccess: React.FC = () => {
     if (txRef && status === 'successful') {
       const confirmPayment = async () => {
         try {
-          // Extract service order ID from tx_ref (assuming format like "flw_101")
-          const serviceOrderId = parseInt(txRef.replace('flw_', ''));
+          // Extract service order ID from tx_ref (assuming format like "flw_101" or "service_order_101")
+          let serviceOrderId: number | null = null;
+          
+          if (txRef.startsWith('flw_')) {
+            serviceOrderId = parseInt(txRef.replace('flw_', ''));
+          } else if (txRef.startsWith('service_order_')) {
+            serviceOrderId = parseInt(txRef.replace('service_order_', ''));
+          } else {
+            // Try to extract number from any format
+            const match = txRef.match(/\d+/);
+            if (match) {
+              serviceOrderId = parseInt(match[0]);
+            }
+          }
           
           if (serviceOrderId) {
             await serviceOrderApi.manualPaymentTrigger({
@@ -27,6 +39,8 @@ const PaymentSuccess: React.FC = () => {
                 }
               }
             });
+            
+            console.log('Manual payment trigger successful for service order:', serviceOrderId);
           }
         } catch (error) {
           console.error('Error confirming payment:', error);
@@ -44,6 +58,18 @@ const PaymentSuccess: React.FC = () => {
       <p className="text-gray-600 mt-2 text-center max-w-md">
         Your payment was processed successfully. You can now track your service order in your dashboard.
       </p>
+      
+      {txRef && (
+        <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+          <p className="text-sm text-blue-800">
+            <strong>Transaction Reference:</strong> {txRef}
+          </p>
+          <p className="text-sm text-blue-700 mt-1">
+            Your order status has been updated automatically.
+          </p>
+        </div>
+      )}
+      
       <div className="mt-6 flex gap-4">
         <Link
           to="/dashboard/user/my-service-orders"
@@ -61,5 +87,3 @@ const PaymentSuccess: React.FC = () => {
     </div>
   );
 };
-
-export default PaymentSuccess
