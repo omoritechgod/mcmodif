@@ -10,29 +10,34 @@ export interface ServiceOrder {
   user_id: number
   service_vendor_id: number
   service_pricing_id: number
+  amount: string
+  status: "pending_vendor_response" | "awaiting_payment" | "paid" | "completed" | "cancelled"
+  notes: string | null
   deadline: string
-  requirements: string
-  status: "pending" | "accepted" | "in_progress" | "completed" | "cancelled"
-  total_amount: number
-  payment_status: "pending" | "paid" | "refunded"
-  vendor_response?: string
+  paid_at: string | null
+  completed_at: string | null
   created_at: string
   updated_at: string
 
   // Relations
-  user?: {
+  user: {
     id: number
     name: string
     phone: string
     email: string
-    profile_picture?: string
+    profile_picture: string | null
+    user_type: string
+    status: number
+    phone_verified_at: string | null
+    created_at: string
+    updated_at: string
   }
 
-  service_pricing?: {
+  service_pricing: {
     id: number
     title: string
     price: number
-  }
+  } | null
 }
 
 export interface ServiceOrderResponse {

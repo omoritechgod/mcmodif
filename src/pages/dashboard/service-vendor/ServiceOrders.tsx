@@ -100,12 +100,12 @@ const ServiceOrders: React.FC = () => {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "pending":
+      case "pending_vendor_response":
         return <Clock size={16} className="text-yellow-600" />
-      case "accepted":
+      case "awaiting_payment":
         return <CheckCircle size={16} className="text-blue-600" />
-      case "in_progress":
-        return <AlertCircle size={16} className="text-orange-600" />
+      case "paid":
+        return <AlertCircle size={16} className="text-green-600" />
       case "completed":
         return <CheckCircle size={16} className="text-green-600" />
       case "cancelled":
@@ -117,12 +117,12 @@ const ServiceOrders: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "pending":
+      case "pending_vendor_response":
         return "bg-yellow-100 text-yellow-800"
-      case "accepted":
+      case "awaiting_payment":
         return "bg-blue-100 text-blue-800"
-      case "in_progress":
-        return "bg-orange-100 text-orange-800"
+      case "paid":
+        return "bg-green-100 text-green-800"
       case "completed":
         return "bg-green-100 text-green-800"
       case "cancelled":
@@ -132,25 +132,12 @@ const ServiceOrders: React.FC = () => {
     }
   }
 
-  const getPaymentStatusColor = (status: string) => {
-    switch (status) {
-      case "pending":
-        return "bg-yellow-100 text-yellow-800"
-      case "paid":
-        return "bg-green-100 text-green-800"
-      case "refunded":
-        return "bg-blue-100 text-blue-800"
-      default:
-        return "bg-gray-100 text-gray-800"
-    }
-  }
-
   const filteredOrders = orders.filter((order) => {
     switch (selectedTab) {
       case "pending":
-        return order.status === "pending"
+        return order.status === "pending_vendor_response"
       case "active":
-        return ["accepted", "in_progress"].includes(order.status)
+        return ["awaiting_payment", "paid"].includes(order.status)
       case "completed":
         return ["completed", "cancelled"].includes(order.status)
       default:

@@ -10,39 +10,73 @@ export interface ServiceOrder {
   user_id: number
   service_vendor_id: number
   service_pricing_id: number
+  amount: string
+  status: "pending_vendor_response" | "awaiting_payment" | "paid" | "completed" | "cancelled"
+  notes: string | null
   deadline: string
-  requirements: string
-  status: string
-  total_amount: number
-  payment_status: string
-  created_at: string
+  paid_at: string | null
+  completed_at: string | null
   updated_at: string
 
-  service_vendor?: {
+  service_vendor: {
     id: number
+    vendor_id: number
     service_name: string
+    description: string
     location: string
+    phone: string
+    rating: string
+    rating_count: number
+    total_reviews: number
+    is_featured: number
+    created_at: string
+    updated_at: string
     vendor: {
+      id: number
+      user_id: number
+      vendor_type: string
       business_name: string
+      category: string
+      is_setup_complete: number
+      is_verified: number
+      created_at: string
+      updated_at: string
+      is_live: boolean
       user: {
+        id: number
         name: string
         phone: string
+        email: string
+        profile_picture: string | null
+        user_type: string
+        status: number
+        phone_verified_at: string | null
+        created_at: string
+        updated_at: string
       }
     }
   }
 
-  service_pricing?: {
+  service_pricing: {
     id: number
     title: string
     price: number
+  } | null
+
+  user?: {
+    id: number
+    name: string
+    phone: string
+    email: string
+    profile_picture: string | null
   }
 }
 
 export interface CreateServiceOrderData {
   service_vendor_id: number
   service_pricing_id: number
+  notes: string
   deadline: string
-  requirements: string
 }
 
 export interface ServiceOrderResponse {
